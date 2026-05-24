@@ -1,0 +1,41 @@
+# Entorno Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+
+# Variables de entorno
+.env
+
+# Volúmenes Docker locales
+postgres_data/
+odoo_data/
+
+# Logs
+*.log
+logs/
+
+# Editor
+.vscode/
+*.swp
+*.swo
+.idea/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Odoo
+*.pyc
+filestore/
+sessions/
+
+
+#excluir words pdfs y mds
+*.pdf
+*.docx
