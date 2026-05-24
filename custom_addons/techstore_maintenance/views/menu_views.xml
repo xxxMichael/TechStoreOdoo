@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- ═══════════════════════════════════════════════════════════════════
-         MENÚ PRINCIPAL — TechStore Maintenance
-    ═══════════════════════════════════════════════════════════════════ -->
-
-    <!-- Menú raíz (aparece en la barra de aplicaciones) -->
     <menuitem id="menu_ts_root"
               name="TechStore"
               sequence="10"
               web_icon="techstore_maintenance,static/description/icon.png"/>
 
-    <!-- ─── Menú: Mantenimientos ─────────────────────────────────────── -->
+    <menuitem id="menu_ts_dashboard"
+              name="Dashboard"
+              parent="menu_ts_root"
+              action="action_ts_dashboard"
+              sequence="1"/>
+
     <menuitem id="menu_ts_maintenance"
               name="Mantenimientos"
               parent="menu_ts_root"
@@ -23,7 +23,12 @@
               action="action_ts_maintenance_order"
               sequence="10"/>
 
-    <!-- ─── Menú: Técnicos ───────────────────────────────────────────── -->
+    <menuitem id="menu_ts_order_analysis"
+              name="Análisis y Gráficas"
+              parent="menu_ts_maintenance"
+              action="action_ts_order_analysis"
+              sequence="20"/>
+
     <menuitem id="menu_ts_technicians_root"
               name="Técnicos"
               parent="menu_ts_root"
@@ -35,7 +40,6 @@
               action="action_ts_technician"
               sequence="10"/>
 
-    <!-- ─── Menú: Equipos ────────────────────────────────────────────── -->
     <menuitem id="menu_ts_equipment_root"
               name="Equipos"
               parent="menu_ts_root"
@@ -47,7 +51,6 @@
               action="action_ts_equipment"
               sequence="10"/>
 
-    <!-- ─── Menú: Configuración ──────────────────────────────────────── -->
     <menuitem id="menu_ts_config"
               name="Configuración"
               parent="menu_ts_root"

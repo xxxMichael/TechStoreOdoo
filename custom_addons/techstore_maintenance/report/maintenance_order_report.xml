@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Acción del reporte PDF (RF-19) -->
+    <record id="action_report_maintenance_order" model="ir.actions.report">
+        <field name="name">Reporte de Mantenimientos</field>
+        <field name="model">ts.maintenance.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">techstore_maintenance.report_maintenance_order_template</field>
+        <field name="report_file">techstore_maintenance.report_maintenance_order_template</field>
+        <field name="print_report_name">'Reporte_Mantenimiento_' + object.folio</field>
+        <field name="binding_model_id" ref="model_ts_maintenance_order"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- Plantilla QWeb del reporte -->
+    <template id="report_maintenance_order_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="order">
+                <t t-call="web.external_layout">
+                    <div class="page">
+
+                        <!-- Encabezado del reporte -->
+                        <div class="row mb-4">
+                            <div class="col-8">
+                                <h2>Orden de Mantenimiento</h2>
+                                <h3 class="text-primary">
+                                    <t t-esc="order.folio"/>
+                                </h3>
+                            </div>
+                            <div class="col-4 text-right">
+                                <span t-attf-class="badge #{'badge-danger' if order.priority == '3' else 'badge-warning' if order.priority == '2' else 'badge-info'}">
+                                    Prioridad: <t t-esc="dict([('0','Baja'),('1','Media'),('2','Alta'),('3','Crítica')]).get(order.priority, order.priority)"/>
+                                </span>
+                                <br/>
+                                <span t-attf-class="badge mt-1 #{'badge-secondary'}">
+                                    <t t-esc="dict([('received','Recibido'),('diagnosis','En Diagnóstico'),('repair','En Reparación'),('ready','Listo para Entrega'),('delivered','Entregado'),('closed','Cerrado')]).get(order.state, order.state)"/>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Datos principales -->
+                        <table class="table table-bordered table-sm mb-4">
+                            <tbody>
+                                <tr>
+                                    <th class="bg-light" width="25%">Cliente</th>
+                                    <td><t t-esc="order.client_id.name"/></td>
+                                    <th class="bg-light" width="25%">Fecha de Recepción</th>
+                                    <td><t t-esc="order.reception_date"/></td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-light">Equipo</th>
+                                    <td><t t-esc="order.equipment_id.brand"/> <t t-esc="order.equipment_id.model_name"/></td>
+                                    <th class="bg-light">N° de Serie</th>
+                                    <td><t t-esc="order.equipment_id.serial_number"/></td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-light">Tipo de Servicio</th>
+                                    <td><t t-esc="order.service_type_id.name"/></td>
+                                    <th class="bg-light">Técnico Asignado</th>
+                                    <td><t t-esc="order.technician_id.name or 'Sin asignar'"/></td>
+                                </tr>
+                                <tr t-if="order.close_date">
+                                    <th class="bg-light">Fecha de Cierre</th>
+                                    <td><t t-esc="order.close_date"/></td>
+                                    <th class="bg-light">Días de Resolución</th>
+                                    <td><t t-esc="order.days_open"/> días</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Problema reportado -->
+                        <div class="mb-3">
+                            <h5>Problema Reportado</h5>
+                            <p t-field="order.problem_description" class="border p-2 bg-light"/>
+                        </div>
+
+                        <!-- Estado físico al ingreso (RF-13) -->
+                        <div class="mb-3">
+                            <h5>Estado Físico al Ingreso</h5>
+                            <p t-field="order.physical_condition" class="border p-2 bg-light"/>
+                        </div>
+
+                        <!-- Diagnóstico y Solución (RF-05) -->
+                        <t t-if="order.diagnosis">
+                            <div class="mb-3">
+                                <h5>Diagnóstico Técnico</h5>
+                                <p t-field="order.diagnosis" class="border p-2"/>
+                            </div>
+                        </t>
+                        <t t-if="order.work_done">
+                            <div class="mb-3">
+                                <h5>Trabajos Realizados</h5>
+                                <p t-field="order.work_done" class="border p-2"/>
+                            </div>
+                        </t>
+                        <t t-if="order.parts_used">
+                            <div class="mb-3">
+                                <h5>Repuestos Utilizados</h5>
+                                <p t-field="order.parts_used" class="border p-2"/>
+                            </div>
+                        </t>
+                        <t t-if="order.resolution">
+                            <div class="mb-3">
+                                <h5>Solución Aplicada</h5>
+                                <p t-field="order.resolution" class="border p-2 bg-light"/>
+                            </div>
+                        </t>
+
+                        <!-- Log de auditoría (RF-15) -->
+                        <t t-if="order.audit_log_ids">
+                            <h5>Historial de Cambios</h5>
+                            <table class="table table-bordered table-sm">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Fecha y Hora</th>
+                                        <th>Usuario</th>
+                                        <th>Tipo de Evento</th>
+                                        <th>Descripción</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="order.audit_log_ids" t-as="log">
+                                        <tr>
+                                            <td><t t-esc="log.event_date"/></td>
+                                            <td><t t-esc="log.user_id.name"/></td>
+                                            <td><t t-esc="log.event_type"/></td>
+                                            <td><t t-esc="log.description"/></td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </t>
+
+                        <!-- Firma de entrega -->
+                        <t t-if="order.state in ['delivered', 'closed']">
+                            <div class="mt-4 pt-3 border-top">
+                                <div class="row">
+                                    <div class="col-6 text-center">
+                                        <div style="border-bottom: 1px solid black; height: 50px;"/>
+                                        <small>Firma del Técnico: <t t-esc="order.technician_id.name"/></small>
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <div style="border-bottom: 1px solid black; height: 50px;"/>
+                                        <small>Firma del Cliente: <t t-esc="order.client_id.name"/></small>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <!-- Reporte de lista de órdenes (exportación masiva) -->
+    <record id="action_report_maintenance_list" model="ir.actions.report">
+        <field name="name">Lista de Mantenimientos</field>
+        <field name="model">ts.maintenance.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">techstore_maintenance.report_maintenance_list_template</field>
+        <field name="report_file">techstore_maintenance.report_maintenance_list_template</field>
+        <field name="print_report_name">'Lista_Mantenimientos_TechStore'</field>
+        <field name="binding_model_id" ref="model_ts_maintenance_order"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_maintenance_list_template">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <h2>Lista de Órdenes de Mantenimiento — TechStore</h2>
+                    <p class="text-muted">Generado: <t t-esc="context_timestamp(datetime.datetime.now()).strftime('%d/%m/%Y %H:%M')"/></p>
+
+                    <table class="table table-bordered table-sm">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Folio</th>
+                                <th>Fecha</th>
+                                <th>Cliente</th>
+                                <th>Equipo</th>
+                                <th>Técnico</th>
+                                <th>Servicio</th>
+                                <th>Prioridad</th>
+                                <th>Estado</th>
+                                <th>Días</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="docs" t-as="order">
+                                <tr t-attf-class="#{order.priority == '3' and 'table-danger' or order.priority == '2' and 'table-warning' or ''}">
+                                    <td><t t-esc="order.folio"/></td>
+                                    <td><t t-esc="order.reception_date"/></td>
+                                    <td><t t-esc="order.client_id.name"/></td>
+                                    <td><t t-esc="order.equipment_id.brand"/> <t t-esc="order.equipment_id.model_name"/></td>
+                                    <td><t t-esc="order.technician_id.name or '—'"/></td>
+                                    <td><t t-esc="order.service_type_id.name"/></td>
+                                    <td><t t-esc="dict([('0','Baja'),('1','Media'),('2','Alta'),('3','Crítica')]).get(order.priority)"/></td>
+                                    <td><t t-esc="dict([('received','Recibido'),('diagnosis','En Diagnóstico'),('repair','En Reparación'),('ready','Listo Entrega'),('delivered','Entregado'),('closed','Cerrado')]).get(order.state)"/></td>
+                                    <td><t t-esc="order.days_open"/></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+
+</odoo>

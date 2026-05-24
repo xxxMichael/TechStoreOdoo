@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         VISTA FORMULARIO — Dashboard Gerencial (RF-18, RF-20)
+    ═══════════════════════════════════════════════════════════════════ -->
+    <record id="view_ts_dashboard_form" model="ir.ui.view">
+        <field name="name">ts.dashboard.form</field>
+        <field name="model">ts.dashboard</field>
+        <field name="arch" type="xml">
+            <form string="Dashboard TechStore" create="false" edit="false">
+                <header>
+                    <button name="action_refresh"
+                            string="↻ Actualizar Dashboard"
+                            type="object"
+                            class="btn-primary"/>
+                    <button name="action_export_report"
+                            string="📄 Exportar Reporte PDF"
+                            type="object"
+                            class="btn-secondary"/>
+                </header>
+                <sheet>
+                    <h1 class="text-center mb-4">📊 Dashboard de Gestión — TechStore Maintenance</h1>
+
+                    <!-- ── Sección 1: Resumen de órdenes por estado ─────────── -->
+                    <h3>Estado de Órdenes</h3>
+                    <div class="o_field_widget o_stat_info row mt-2 mb-4">
+
+                        <div class="col-md-2 col-6 text-center">
+                            <div class="p-3 border rounded bg-light">
+                                <div class="h2 font-weight-bold text-primary">
+                                    <field name="count_received" readonly="1"/>
+                                </div>
+                                <div class="text-muted small">Recibidas</div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2 col-6 text-center">
+                            <div class="p-3 border rounded" style="background:#fff3cd">
+                                <div class="h2 font-weight-bold text-warning">
+                                    <field name="count_diagnosis" readonly="1"/>
+                                </div>
+                                <div class="text-muted small">En Diagnóstico</div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2 col-6 text-center">
+                            <div class="p-3 border rounded" style="background:#cce5ff">
+                                <div class="h2 font-weight-bold text-info">
+                                    <field name="count_repair" readonly="1"/>
+                                </div>
+                                <div class="text-muted small">En Reparación</div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2 col-6 text-center">
+                            <div class="p-3 border rounded" style="background:#d4edda">
+                                <div class="h2 font-weight-bold text-success">
+                                    <field name="count_ready" readonly="1"/>
+                                </div>
+                                <div class="text-muted small">Listas Entrega</div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2 col-6 text-center">
+                            <div class="p-3 border rounded bg-light">
+                                <div class="h2 font-weight-bold text-secondary">
+                                    <field name="count_closed" readonly="1"/>
+                                </div>
+                                <div class="text-muted small">Cerradas</div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2 col-6 text-center">
+                            <div class="p-3 border rounded" style="background:#f8d7da">
+                                <div class="h2 font-weight-bold text-danger">
+                                    <field name="count_overdue" readonly="1"/>
+                                </div>
+                                <div class="text-muted small">⚠ Vencidas (SLA)</div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- ── Sección 2: Alertas rápidas ──────────────────────── -->
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <div class="p-3 border rounded text-center">
+                                <div class="h3 text-danger font-weight-bold">
+                                    <field name="count_critical" readonly="1"/>
+                                </div>
+                                <div>Órdenes Críticas Activas</div>
+                                <button name="action_view_critical" type="object"
+                                        class="btn btn-sm btn-danger mt-2"
+                                        attrs="{'invisible': [('count_critical', '=', 0)]}">
+                                    Ver →
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-3 border rounded text-center">
+                                <div class="h3 text-warning font-weight-bold">
+                                    <field name="count_unassigned" readonly="1"/>
+                                </div>
+                                <div>Sin Técnico Asignado</div>
+                                <button name="action_view_unassigned" type="object"
+                                        class="btn btn-sm btn-warning mt-2"
+                                        attrs="{'invisible': [('count_unassigned', '=', 0)]}">
+                                    Asignar →
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-3 border rounded text-center">
+                                <div class="h3 text-info font-weight-bold">
+                                    <field name="avg_resolution_days" readonly="1"/>
+                                </div>
+                                <div>Días Prom. Resolución</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ── Sección 3: ISO 25010 Métricas (RF-20) ───────────── -->
+                    <h3>Indicadores ISO/IEC 25010</h3>
+                    <field name="iso_correctness_semaphore" invisible="1"/>
+                    <field name="iso_efficiency_semaphore" invisible="1"/>
+                    <div class="row mt-2 mb-4">
+
+                        <div class="col-md-4">
+                            <div class="p-3 border rounded">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <strong>Funcionalidad Correcta</strong>
+                                    <span class="badge"
+                                          attrs="{'invisible': [('iso_correctness_semaphore', '!=', 'green')]}">
+                                        🟢
+                                    </span>
+                                    <span attrs="{'invisible': [('iso_correctness_semaphore', '!=', 'yellow')]}">
+                                        🟡
+                                    </span>
+                                    <span attrs="{'invisible': [('iso_correctness_semaphore', '!=', 'red')]}">
+                                        🔴
+                                    </span>
+                                </div>
+                                <div class="h3 text-center mt-2">
+                                    <field name="iso_correctness" readonly="1"/>%
+                                </div>
+                                <small class="text-muted">Órdenes sin reincidencia / Total cerradas</small>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="p-3 border rounded">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <strong>Eficiencia de Rendimiento</strong>
+                                    <span attrs="{'invisible': [('iso_efficiency_semaphore', '!=', 'green')]}">
+                                        🟢
+                                    </span>
+                                    <span attrs="{'invisible': [('iso_efficiency_semaphore', '!=', 'yellow')]}">
+                                        🟡
+                                    </span>
+                                    <span attrs="{'invisible': [('iso_efficiency_semaphore', '!=', 'red')]}">
+                                        🔴
+                                    </span>
+                                </div>
+                                <div class="h3 text-center mt-2">
+                                    <field name="iso_efficiency" readonly="1"/>%
+                                </div>
+                                <small class="text-muted">Órdenes resueltas dentro del SLA</small>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="p-3 border rounded">
+                                <strong>Disponibilidad del Servicio</strong>
+                                <div class="h5 text-center mt-2">
+                                    <field name="iso_availability" readonly="1"/>
+                                </div>
+                                <small class="text-muted">ISO 25010 — Reliability</small>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- ── Sección 4: Tasa de reincidencia ─────────────────── -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="p-3 border rounded">
+                                <strong>Tasa de Reincidencia (órdenes reabiertas)</strong>
+                                <div class="h3 text-center mt-2">
+                                    <field name="recurrence_rate" readonly="1"/>%
+                                </div>
+                                <small class="text-muted">Objetivo: &lt; 10%</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-3 border rounded">
+                                <strong>Total de Órdenes Registradas</strong>
+                                <div class="h3 text-center mt-2">
+                                    <field name="total_orders" readonly="1"/>
+                                </div>
+                                <small class="text-muted">Activas: <field name="count_active" readonly="1"/></small>
+                            </div>
+                        </div>
+                    </div>
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         VISTA GRÁFICA — Órdenes por Estado (RF-18)
+    ═══════════════════════════════════════════════════════════════════ -->
+    <record id="view_ts_maintenance_order_graph" model="ir.ui.view">
+        <field name="name">ts.maintenance.order.graph</field>
+        <field name="model">ts.maintenance.order</field>
+        <field name="arch" type="xml">
+            <graph string="Órdenes por Estado" type="bar" sample="1">
+                <field name="state" type="row"/>
+                <field name="priority" type="col"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         VISTA PIVOT — Análisis de Órdenes (RF-18)
+    ═══════════════════════════════════════════════════════════════════ -->
+    <record id="view_ts_maintenance_order_pivot" model="ir.ui.view">
+        <field name="name">ts.maintenance.order.pivot</field>
+        <field name="model">ts.maintenance.order</field>
+        <field name="arch" type="xml">
+            <pivot string="Análisis de Mantenimientos" sample="1">
+                <field name="reception_date" type="row" interval="month"/>
+                <field name="technician_id" type="col"/>
+                <field name="days_open" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Acción Dashboard -->
+    <record id="action_ts_dashboard" model="ir.actions.act_window">
+        <field name="name">Dashboard</field>
+        <field name="res_model">ts.dashboard</field>
+        <field name="view_mode">form</field>
+        <field name="target">main</field>
+    </record>
+
+    <!-- Acción análisis gráfico -->
+    <record id="action_ts_order_analysis" model="ir.actions.act_window">
+        <field name="name">Análisis de Órdenes</field>
+        <field name="res_model">ts.maintenance.order</field>
+        <field name="view_mode">graph,pivot,list</field>
+    </record>
+
+</odoo>

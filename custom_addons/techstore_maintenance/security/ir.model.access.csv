@@ -19,3 +19,7 @@ access_ts_audit_log_admin,ts.audit.log (Admin),model_ts_audit_log,techstore_main
 access_ts_audit_log_supervisor,ts.audit.log (Supervisor),model_ts_audit_log,techstore_maintenance.group_ts_supervisor,1,0,1,0
 access_ts_audit_log_technician,ts.audit.log (Tecnico),model_ts_audit_log,techstore_maintenance.group_ts_technician,1,0,1,0
 access_ts_audit_log_receptionist,ts.audit.log (Recepcionista),model_ts_audit_log,techstore_maintenance.group_ts_receptionist,1,0,0,0
+access_ts_dashboard_admin,ts.dashboard (Admin),model_ts_dashboard,techstore_maintenance.group_ts_admin,1,1,1,1
+access_ts_dashboard_supervisor,ts.dashboard (Supervisor),model_ts_dashboard,techstore_maintenance.group_ts_supervisor,1,1,1,1
+access_ts_dashboard_technician,ts.dashboard (Tecnico),model_ts_dashboard,techstore_maintenance.group_ts_technician,1,0,0,0
+access_ts_dashboard_receptionist,ts.dashboard (Recepcionista),model_ts_dashboard,techstore_maintenance.group_ts_receptionist,1,0,0,0
