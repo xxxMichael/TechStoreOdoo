@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         VISTA FORMULARIO — Orden de Mantenimiento
+         Cubre: RF-01 (crear), RF-02 (técnico), RF-03 (estado), RF-04 (prioridad),
+                RF-05 (diagnóstico), RF-06 (cierre), RF-13 (estado físico), RF-15 (log)
+    ═══════════════════════════════════════════════════════════════════ -->
+    <record id="view_ts_maintenance_order_form" model="ir.ui.view">
+        <field name="name">ts.maintenance.order.form</field>
+        <field name="model">ts.maintenance.order</field>
+        <field name="arch" type="xml">
+            <form string="Orden de Mantenimiento">
+
+                <!-- Barra de estado con botones de transición (RF-03) -->
+                <header>
+                    <button name="action_start_diagnosis"
+                            string="▶ Iniciar Diagnóstico"
+                            type="object"
+                            class="btn-primary"
+                            attrs="{'invisible': [('state', '!=', 'received')]}"/>
+                    <button name="action_start_repair"
+                            string="▶ Iniciar Reparación"
+                            type="object"
+                            class="btn-primary"
+                            attrs="{'invisible': [('state', '!=', 'diagnosis')]}"/>
+                    <button name="action_mark_ready"
+                            string="✅ Listo para Entrega"
+                            type="object"
+                            class="btn-primary"
+                            attrs="{'invisible': [('state', '!=', 'repair')]}"/>
+                    <button name="action_mark_delivered"
+                            string="📦 Marcar Entregado"
+                            type="object"
+                            class="btn-primary"
+                            attrs="{'invisible': [('state', '!=', 'ready')]}"/>
+                    <button name="action_close"
+                            string="🔒 Cerrar Orden"
+                            type="object"
+                            class="btn-secondary"
+                            attrs="{'invisible': [('state', '!=', 'delivered')]}"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="received,diagnosis,repair,ready,delivered,closed"/>
+                </header>
+
+                <!-- Cuerpo del formulario -->
+                <sheet>
+                    <!-- RF-04: Indicador visual de prioridad crítica -->
+                    <div class="alert alert-danger" role="alert"
+                         attrs="{'invisible': [('priority', '!=', '3')]}">
+                        <strong>⚠ PRIORIDAD CRÍTICA</strong> — Esta orden requiere atención inmediata.
+                    </div>
+
+                    <!-- Encabezado con folio y prioridad -->
+                    <div class="oe_title">
+                        <h1>
+                            <field name="folio" readonly="1"/>
+                        </h1>
+                        <div class="row">
+                            <div class="col-6">
+                                <!-- RF-04: Selector de prioridad con colores -->
+                                <field name="priority" widget="priority"/>
+                                <label for="priority" class="ml-2"/>
+                            </div>
+                            <div class="col-6 text-right">
+                                <field name="days_open" readonly="1"/>
+                                <label for="days_open" string=" días abierta"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Grupo principal: datos de la orden -->
+                    <group>
+                        <group string="Datos del Servicio">
+                            <!-- RF-01: Campos obligatorios de la orden -->
+                            <field name="client_id"
+                                   attrs="{'readonly': [('state', '=', 'closed')]}"/>
+                            <field name="equipment_id"
+                                   attrs="{'readonly': [('state', '=', 'closed')]}"/>
+                            <field name="service_type_id"
+                                   attrs="{'readonly': [('state', '=', 'closed')]}"/>
+                            <field name="reception_date"
+                                   attrs="{'readonly': [('state', '=', 'closed')]}"/>
+                        </group>
+                        <group string="Asignación">
+                            <!-- RF-02: Técnico asignado -->
+                            <field name="technician_id"
+                                   attrs="{'readonly': [('state', '=', 'closed')]}"/>
+                            <field name="reopened" readonly="1"
+                                   attrs="{'invisible': [('reopened', '=', False)]}"/>
+                            <field name="close_date" readonly="1"
+                                   attrs="{'invisible': [('close_date', '=', False)]}"/>
+                            <field name="delivery_date" readonly="1"
+                                   attrs="{'invisible': [('delivery_date', '=', False)]}"/>
+                        </group>
+                    </group>
+
+                    <!-- Pestañas de contenido -->
+                    <notebook>
+
+                        <!-- Pestaña 1: Descripción del problema y estado físico -->
+                        <page string="📋 Problema e Ingreso" name="problem">
+                            <group>
+                                <!-- RF-01: Descripción del problema -->
+                                <field name="problem_description"
+                                       placeholder="Describe el problema reportado por el cliente..."
+                                       attrs="{'readonly': [('state', '=', 'closed')]}"/>
+                                <!-- RF-13: Estado físico al ingreso (campo obligatorio) -->
+                                <field name="physical_condition"
+                                       string="Estado físico al ingreso *"
+                                       placeholder="Describe el estado físico del equipo al momento de la recepción: daños visibles, accesorios incluidos, etc."
+                                       attrs="{'readonly': [('state', 'not in', ['received', 'diagnosis'])]}"/>
+                            </group>
+                        </page>
+
+                        <!-- Pestaña 2: Diagnóstico y resolución (RF-05) -->
+                        <page string="🔧 Diagnóstico y Solución" name="diagnosis"
+                              attrs="{'invisible': [('state', 'in', ['received'])]}">
+                            <group>
+                                <field name="diagnosis"
+                                       placeholder="Ingresa el diagnóstico técnico detallado..."
+                                       attrs="{'readonly': [('state', 'in', ['ready', 'delivered', 'closed'])]}"/>
+                                <field name="work_done"
+                                       placeholder="Describe los trabajos realizados..."
+                                       attrs="{'readonly': [('state', 'in', ['delivered', 'closed'])]}"/>
+                                <field name="parts_used"
+                                       placeholder="Lista los repuestos o materiales utilizados..."
+                                       attrs="{'readonly': [('state', 'in', ['delivered', 'closed'])]}"/>
+                                <field name="resolution"
+                                       placeholder="Describe la solución aplicada al equipo..."
+                                       attrs="{'readonly': [('state', 'in', ['delivered', 'closed'])]}"/>
+                            </group>
+                        </page>
+
+                        <!-- Pestaña 3: Entrega (RF-06) -->
+                        <page string="📦 Entrega" name="delivery"
+                              attrs="{'invisible': [('state', 'not in', ['ready', 'delivered', 'closed'])]}">
+                            <group>
+                                <field name="delivery_confirmation"
+                                       placeholder="Notas sobre la entrega al cliente..."
+                                       attrs="{'readonly': [('state', '=', 'closed')]}"/>
+                            </group>
+                        </page>
+
+                        <!-- Pestaña 4: Log de auditoría (RF-15) — solo lectura -->
+                        <page string="📜 Historial de Cambios" name="audit">
+                            <field name="audit_log_ids" readonly="1">
+                                <tree string="Log de Auditoría" create="false" edit="false" delete="false">
+                                    <field name="event_date"/>
+                                    <field name="user_id"/>
+                                    <field name="event_type"/>
+                                    <field name="description"/>
+                                </tree>
+                            </field>
+                        </page>
+
+                    </notebook>
+                </sheet>
+
+                <!-- Chatter de Odoo para mensajes y actividades -->
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+
+            </form>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         VISTA LISTA — Órdenes de Mantenimiento
+    ═══════════════════════════════════════════════════════════════════ -->
+    <record id="view_ts_maintenance_order_list" model="ir.ui.view">
+        <field name="name">ts.maintenance.order.list</field>
+        <field name="model">ts.maintenance.order</field>
+        <field name="arch" type="xml">
+            <tree string="Órdenes de Mantenimiento"
+                  decoration-danger="priority == '3'"
+                  decoration-warning="priority == '2'"
+                  decoration-muted="state == 'closed'">
+                <field name="folio"/>
+                <field name="reception_date"/>
+                <field name="client_id"/>
+                <field name="equipment_id"/>
+                <field name="service_type_id"/>
+                <field name="technician_id"/>
+                <field name="priority" widget="priority"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'received'"
+                       decoration-warning="state in ('diagnosis', 'repair')"
+                       decoration-success="state == 'ready'"
+                       decoration-primary="state == 'delivered'"
+                       decoration-muted="state == 'closed'"/>
+                <field name="days_open" string="Días"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         VISTA KANBAN — Tablero de Órdenes Activas (RF-14)
+    ═══════════════════════════════════════════════════════════════════ -->
+    <record id="view_ts_maintenance_order_kanban" model="ir.ui.view">
+        <field name="name">ts.maintenance.order.kanban</field>
+        <field name="model">ts.maintenance.order</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state"
+                    group_create="false"
+                    quick_create="false"
+                    class="o_kanban_small_column">
+                <field name="folio"/>
+                <field name="client_id"/>
+                <field name="equipment_id"/>
+                <field name="technician_id"/>
+                <field name="priority"/>
+                <field name="state"/>
+                <field name="days_open"/>
+                <field name="priority_kanban"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_card oe_kanban_global_click
+                            #{record.priority.raw_value == '3' ? 'border-danger' : ''}
+                            #{record.priority.raw_value == '2' ? 'border-warning' : ''}">
+                            <!-- Encabezado de la tarjeta -->
+                            <div class="oe_kanban_content p-2">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <strong class="text-truncate">
+                                        <field name="folio"/>
+                                    </strong>
+                                    <field name="priority" widget="priority" readonly="0"/>
+                                </div>
+
+                                <div class="text-muted small mb-1">
+                                    <i class="fa fa-user"/> <field name="client_id"/>
+                                </div>
+                                <div class="text-muted small mb-1">
+                                    <i class="fa fa-laptop"/> <field name="equipment_id"/>
+                                </div>
+                                <div class="text-muted small">
+                                    <i class="fa fa-wrench"/> <field name="service_type_id"/>
+                                </div>
+                            </div>
+
+                            <!-- Pie de la tarjeta -->
+                            <div class="oe_kanban_footer d-flex justify-content-between align-items-center px-2 py-1">
+                                <span class="text-muted small">
+                                    <i class="fa fa-clock-o"/>
+                                    <field name="days_open"/> días
+                                </span>
+                                <field name="technician_id" widget="many2one_avatar_user"
+                                       options="{'no_open': True}"/>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         FILTROS Y BÚSQUEDA — RF-17
+    ═══════════════════════════════════════════════════════════════════ -->
+    <record id="view_ts_maintenance_order_search" model="ir.ui.view">
+        <field name="name">ts.maintenance.order.search</field>
+        <field name="model">ts.maintenance.order</field>
+        <field name="arch" type="xml">
+            <search string="Buscar Órdenes">
+                <!-- RF-17: Búsqueda por folio, cliente, técnico, equipo -->
+                <field name="folio" string="Folio"/>
+                <field name="client_id" string="Cliente"/>
+                <field name="technician_id" string="Técnico"/>
+                <field name="equipment_id" string="Equipo"/>
+                <field name="service_type_id" string="Tipo de servicio"/>
+
+                <!-- Filtros rápidos -->
+                <filter name="filter_active"
+                        string="Activas"
+                        domain="[('state', 'not in', ['closed'])]"/>
+                <filter name="filter_critical"
+                        string="⚠ Críticas"
+                        domain="[('priority', '=', '3')]"/>
+                <filter name="filter_high"
+                        string="Alta prioridad"
+                        domain="[('priority', 'in', ['2', '3'])]"/>
+                <filter name="filter_received"
+                        string="Recibidas"
+                        domain="[('state', '=', 'received')]"/>
+                <filter name="filter_diagnosis"
+                        string="En Diagnóstico"
+                        domain="[('state', '=', 'diagnosis')]"/>
+                <filter name="filter_repair"
+                        string="En Reparación"
+                        domain="[('state', '=', 'repair')]"/>
+                <filter name="filter_ready"
+                        string="Listas para Entrega"
+                        domain="[('state', '=', 'ready')]"/>
+                <filter name="filter_closed"
+                        string="Cerradas"
+                        domain="[('state', '=', 'closed')]"/>
+                <separator/>
+                <filter name="filter_unassigned"
+                        string="Sin técnico asignado"
+                        domain="[('technician_id', '=', False)]"/>
+                <filter name="filter_today"
+                        string="Recibidas hoy"
+                        domain="[('reception_date', '=', context_today().strftime('%Y-%m-%d'))]"/>
+
+                <!-- Agrupaciones -->
+                <group expand="0" string="Agrupar por">
+                    <filter name="group_state"   string="Estado"    context="{'group_by': 'state'}"/>
+                    <filter name="group_priority" string="Prioridad" context="{'group_by': 'priority'}"/>
+                    <filter name="group_technician" string="Técnico" context="{'group_by': 'technician_id'}"/>
+                    <filter name="group_client"   string="Cliente"   context="{'group_by': 'client_id'}"/>
+                    <filter name="group_service"  string="Tipo de servicio" context="{'group_by': 'service_type_id'}"/>
+                    <filter name="group_date"     string="Fecha de recepción" context="{'group_by': 'reception_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         ACCIÓN DE VENTANA — Órdenes de Mantenimiento
+    ═══════════════════════════════════════════════════════════════════ -->
+    <record id="action_ts_maintenance_order" model="ir.actions.act_window">
+        <field name="name">Órdenes de Mantenimiento</field>
+        <field name="res_model">ts.maintenance.order</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="context">{'search_default_filter_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                ¡No hay órdenes de mantenimiento activas!
+            </p>
+            <p>Crea la primera orden de mantenimiento para comenzar.</p>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Grupos de seguridad del módulo TechStore Maintenance.
+        Corresponde a los roles definidos en RNF-03 y en la sección 4.5 del análisis.
+    -->
+
+    <record id="module_category_ts" model="ir.module.category">
+        <field name="name">TechStore Maintenance</field>
+        <field name="description">Categoría para los roles del módulo de mantenimiento TechStore.</field>
+        <field name="sequence">100</field>
+    </record>
+
+    <!-- Rol: Recepcionista — Crear órdenes, registrar clientes y equipos -->
+    <record id="group_ts_receptionist" model="res.groups">
+        <field name="name">Recepcionista</field>
+        <field name="category_id" ref="module_category_ts"/>
+        <field name="comment">
+            Puede crear órdenes, registrar clientes y equipos.
+            Puede cambiar el estado a Recibido y Listo para Entrega.
+        </field>
+    </record>
+
+    <!-- Rol: Técnico — Ver y gestionar sus propias órdenes -->
+    <record id="group_ts_technician" model="res.groups">
+        <field name="name">Técnico</field>
+        <field name="category_id" ref="module_category_ts"/>
+        <field name="implied_ids" eval="[(4, ref('group_ts_receptionist'))]"/>
+        <field name="comment">
+            Puede ver las órdenes que tiene asignadas.
+            Puede actualizar el estado y registrar diagnóstico/resolución de sus órdenes.
+        </field>
+    </record>
+
+    <!-- Rol: Supervisor de Taller — Gestión completa de órdenes y técnicos -->
+    <record id="group_ts_supervisor" model="res.groups">
+        <field name="name">Supervisor de Taller</field>
+        <field name="category_id" ref="module_category_ts"/>
+        <field name="implied_ids" eval="[(4, ref('group_ts_technician'))]"/>
+        <field name="comment">
+            Puede crear, editar y asignar órdenes.
+            Puede gestionar técnicos, consultar métricas y exportar reportes.
+            Puede aprobar cambios de estado sensibles.
+        </field>
+    </record>
+
+    <!-- Rol: Administrador TechStore — Acceso total -->
+    <record id="group_ts_admin" model="res.groups">
+        <field name="name">Administrador TechStore</field>
+        <field name="category_id" ref="module_category_ts"/>
+        <field name="implied_ids" eval="[(4, ref('group_ts_supervisor'))]"/>
+        <field name="users" eval="[(4, ref('base.user_admin'))]"/>
+        <field name="comment">
+            Acceso total: configuración, usuarios, reportes, todos los registros.
+        </field>
+    </record>
+
+</odoo>

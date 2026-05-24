@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         VISTA FORMULARIO — Equipo
+    ═══════════════════════════════════════════════════════════════════ -->
+    <record id="view_ts_equipment_form" model="ir.ui.view">
+        <field name="name">ts.equipment.form</field>
+        <field name="model">ts.equipment</field>
+        <field name="arch" type="xml">
+            <form string="Equipo del Cliente">
+                <header>
+                    <field name="current_state" widget="statusbar"
+                           statusbar_visible="operational,faulty,under_maintenance,retired"/>
+                </header>
+                <sheet>
+                    <!-- Botón acceso rápido a historial de mantenimientos (RF-12) -->
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_maintenance_history"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-history">
+                            <field name="order_count" widget="statinfo"
+                                   string="Mantenimientos"/>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Nombre del equipo"/></h1>
+                    </div>
+
+                    <group>
+                        <group string="Información del equipo">
+                            <!-- RF-11: Tipo, marca, modelo, número de serie -->
+                            <field name="equipment_type"/>
+                            <field name="brand"/>
+                            <field name="model_name"/>
+                            <field name="serial_number"/>
+                        </group>
+                        <group string="Propietario y estado">
+                            <field name="client_id"/>
+                            <field name="current_state"/>
+                            <field name="active" widget="boolean_toggle"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <field name="notes" placeholder="Observaciones generales del equipo..."/>
+                    </group>
+
+                    <!-- RF-12: Historial de mantenimientos -->
+                    <notebook>
+                        <page string="📋 Historial de Mantenimientos" name="history">
+                            <field name="order_ids" readonly="1">
+                                <tree string="Historial" create="false" edit="false">
+                                    <field name="folio"/>
+                                    <field name="reception_date"/>
+                                    <field name="technician_id"/>
+                                    <field name="service_type_id"/>
+                                    <field name="diagnosis" optional="show"/>
+                                    <field name="resolution" optional="show"/>
+                                    <field name="state" widget="badge"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         VISTA LISTA — Equipos
+    ═══════════════════════════════════════════════════════════════════ -->
+    <record id="view_ts_equipment_list" model="ir.ui.view">
+        <field name="name">ts.equipment.list</field>
+        <field name="model">ts.equipment</field>
+        <field name="arch" type="xml">
+            <tree string="Equipos"
+                  decoration-muted="current_state == 'retired'">
+                <field name="name"/>
+                <field name="equipment_type"/>
+                <field name="brand"/>
+                <field name="model_name"/>
+                <field name="serial_number"/>
+                <field name="client_id"/>
+                <field name="current_state" widget="badge"
+                       decoration-success="current_state == 'operational'"
+                       decoration-danger="current_state == 'faulty'"
+                       decoration-warning="current_state == 'under_maintenance'"
+                       decoration-muted="current_state == 'retired'"/>
+                <field name="order_count" string="Mantenimientos"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Búsqueda de equipos -->
+    <record id="view_ts_equipment_search" model="ir.ui.view">
+        <field name="name">ts.equipment.search</field>
+        <field name="model">ts.equipment</field>
+        <field name="arch" type="xml">
+            <search string="Buscar Equipos">
+                <field name="name"/>
+                <field name="serial_number" string="Número de serie"/>
+                <field name="client_id" string="Cliente"/>
+                <field name="brand" string="Marca"/>
+                <field name="model_name" string="Modelo"/>
+                <filter name="operational" string="Operativos"
+                        domain="[('current_state', '=', 'operational')]"/>
+                <filter name="faulty" string="Con falla"
+                        domain="[('current_state', '=', 'faulty')]"/>
+                <filter name="in_maintenance" string="En mantenimiento"
+                        domain="[('current_state', '=', 'under_maintenance')]"/>
+                <separator/>
+                <group expand="0" string="Agrupar por">
+                    <filter name="group_client" string="Cliente" context="{'group_by': 'client_id'}"/>
+                    <filter name="group_type" string="Tipo de equipo" context="{'group_by': 'equipment_type'}"/>
+                    <filter name="group_brand" string="Marca" context="{'group_by': 'brand'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Acción de equipos -->
+    <record id="action_ts_equipment" model="ir.actions.act_window">
+        <field name="name">Equipos de Clientes</field>
+        <field name="res_model">ts.equipment</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

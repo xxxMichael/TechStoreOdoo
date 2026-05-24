@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!--
+        Datos iniciales del catálogo de tipos de servicio.
+        noupdate="1": estos registros solo se crean en la instalación,
+        no se sobreescriben en actualizaciones del módulo.
+    -->
+
+    <record id="service_type_diagnosis" model="ts.service.type">
+        <field name="name">Diagnóstico técnico</field>
+        <field name="description">Evaluación y diagnóstico del equipo para identificar la falla o problema.</field>
+    </record>
+
+    <record id="service_type_hardware_repair" model="ts.service.type">
+        <field name="name">Reparación de hardware</field>
+        <field name="description">Reparación o reemplazo de componentes físicos del equipo.</field>
+    </record>
+
+    <record id="service_type_software" model="ts.service.type">
+        <field name="name">Instalación / actualización de software</field>
+        <field name="description">Instalación de sistema operativo, aplicaciones o actualizaciones.</field>
+    </record>
+
+    <record id="service_type_cleaning" model="ts.service.type">
+        <field name="name">Limpieza y mantenimiento preventivo</field>
+        <field name="description">Limpieza interna del equipo, aplicación de pasta térmica y revisión general.</field>
+    </record>
+
+    <record id="service_type_network" model="ts.service.type">
+        <field name="name">Configuración de red</field>
+        <field name="description">Configuración de interfaces de red, VPN, Wi-Fi o equipos de conectividad.</field>
+    </record>
+
+    <record id="service_type_data_recovery" model="ts.service.type">
+        <field name="name">Recuperación de datos</field>
+        <field name="description">Recuperación de información de discos dañados o formateados.</field>
+    </record>
+
+    <record id="service_type_upgrade" model="ts.service.type">
+        <field name="name">Mejora de rendimiento (upgrade)</field>
+        <field name="description">Ampliación de RAM, cambio a SSD u otras mejoras de hardware.</field>
+    </record>
+
+    <record id="service_type_other" model="ts.service.type">
+        <field name="name">Otro servicio</field>
+        <field name="description">Servicio técnico no contemplado en las categorías anteriores.</field>
+    </record>
+
+    <!-- Secuencia para folio único de órdenes (RF-01) -->
+    <record id="seq_ts_maintenance_order" model="ir.sequence">
+        <field name="name">TechStore — Folio de Orden de Mantenimiento</field>
+        <field name="code">ts.maintenance.order</field>
+        <field name="prefix">TS-%(year)s-</field>
+        <field name="padding">4</field>
+        <field name="number_next">1</field>
+        <field name="number_increment">1</field>
+        <field name="implementation">standard</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+</odoo>

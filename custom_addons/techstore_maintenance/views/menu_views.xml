@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         MENÚ PRINCIPAL — TechStore Maintenance
+    ═══════════════════════════════════════════════════════════════════ -->
+
+    <!-- Menú raíz (aparece en la barra de aplicaciones) -->
+    <menuitem id="menu_ts_root"
+              name="TechStore"
+              sequence="10"
+              web_icon="techstore_maintenance,static/description/icon.png"/>
+
+    <!-- ─── Menú: Mantenimientos ─────────────────────────────────────── -->
+    <menuitem id="menu_ts_maintenance"
+              name="Mantenimientos"
+              parent="menu_ts_root"
+              sequence="10"/>
+
+    <menuitem id="menu_ts_maintenance_orders"
+              name="Órdenes de Mantenimiento"
+              parent="menu_ts_maintenance"
+              action="action_ts_maintenance_order"
+              sequence="10"/>
+
+    <!-- ─── Menú: Técnicos ───────────────────────────────────────────── -->
+    <menuitem id="menu_ts_technicians_root"
+              name="Técnicos"
+              parent="menu_ts_root"
+              sequence="20"/>
+
+    <menuitem id="menu_ts_technicians"
+              name="Gestión de Técnicos"
+              parent="menu_ts_technicians_root"
+              action="action_ts_technician"
+              sequence="10"/>
+
+    <!-- ─── Menú: Equipos ────────────────────────────────────────────── -->
+    <menuitem id="menu_ts_equipment_root"
+              name="Equipos"
+              parent="menu_ts_root"
+              sequence="30"/>
+
+    <menuitem id="menu_ts_equipment"
+              name="Catálogo de Equipos"
+              parent="menu_ts_equipment_root"
+              action="action_ts_equipment"
+              sequence="10"/>
+
+    <!-- ─── Menú: Configuración ──────────────────────────────────────── -->
+    <menuitem id="menu_ts_config"
+              name="Configuración"
+              parent="menu_ts_root"
+              sequence="90"
+              groups="techstore_maintenance.group_ts_admin"/>
+
+    <menuitem id="menu_ts_service_types"
+              name="Tipos de Servicio"
+              parent="menu_ts_config"
+              action="action_ts_service_type"
+              sequence="10"/>
+
+</odoo>

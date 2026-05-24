@@ -1,0 +1,21 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_ts_maintenance_order_admin,ts.maintenance.order (Admin),model_ts_maintenance_order,techstore_maintenance.group_ts_admin,1,1,1,1
+access_ts_maintenance_order_supervisor,ts.maintenance.order (Supervisor),model_ts_maintenance_order,techstore_maintenance.group_ts_supervisor,1,1,1,0
+access_ts_maintenance_order_technician,ts.maintenance.order (Tecnico),model_ts_maintenance_order,techstore_maintenance.group_ts_technician,1,1,0,0
+access_ts_maintenance_order_receptionist,ts.maintenance.order (Recepcionista),model_ts_maintenance_order,techstore_maintenance.group_ts_receptionist,1,0,1,0
+access_ts_equipment_admin,ts.equipment (Admin),model_ts_equipment,techstore_maintenance.group_ts_admin,1,1,1,1
+access_ts_equipment_supervisor,ts.equipment (Supervisor),model_ts_equipment,techstore_maintenance.group_ts_supervisor,1,1,1,0
+access_ts_equipment_technician,ts.equipment (Tecnico),model_ts_equipment,techstore_maintenance.group_ts_technician,1,0,0,0
+access_ts_equipment_receptionist,ts.equipment (Recepcionista),model_ts_equipment,techstore_maintenance.group_ts_receptionist,1,1,1,0
+access_ts_technician_admin,ts.technician (Admin),model_ts_technician,techstore_maintenance.group_ts_admin,1,1,1,1
+access_ts_technician_supervisor,ts.technician (Supervisor),model_ts_technician,techstore_maintenance.group_ts_supervisor,1,1,1,0
+access_ts_technician_technician,ts.technician (Tecnico),model_ts_technician,techstore_maintenance.group_ts_technician,1,0,0,0
+access_ts_technician_receptionist,ts.technician (Recepcionista),model_ts_technician,techstore_maintenance.group_ts_receptionist,1,0,0,0
+access_ts_service_type_admin,ts.service.type (Admin),model_ts_service_type,techstore_maintenance.group_ts_admin,1,1,1,1
+access_ts_service_type_supervisor,ts.service.type (Supervisor),model_ts_service_type,techstore_maintenance.group_ts_supervisor,1,0,0,0
+access_ts_service_type_technician,ts.service.type (Tecnico),model_ts_service_type,techstore_maintenance.group_ts_technician,1,0,0,0
+access_ts_service_type_receptionist,ts.service.type (Recepcionista),model_ts_service_type,techstore_maintenance.group_ts_receptionist,1,0,0,0
+access_ts_audit_log_admin,ts.audit.log (Admin),model_ts_audit_log,techstore_maintenance.group_ts_admin,1,0,1,0
+access_ts_audit_log_supervisor,ts.audit.log (Supervisor),model_ts_audit_log,techstore_maintenance.group_ts_supervisor,1,0,1,0
+access_ts_audit_log_technician,ts.audit.log (Tecnico),model_ts_audit_log,techstore_maintenance.group_ts_technician,1,0,1,0
+access_ts_audit_log_receptionist,ts.audit.log (Recepcionista),model_ts_audit_log,techstore_maintenance.group_ts_receptionist,1,0,0,0

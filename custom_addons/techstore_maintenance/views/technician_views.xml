@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         VISTA FORMULARIO — Técnico
+    ═══════════════════════════════════════════════════════════════════ -->
+    <record id="view_ts_technician_form" model="ir.ui.view">
+        <field name="name">ts.technician.form</field>
+        <field name="model">ts.technician</field>
+        <field name="arch" type="xml">
+            <form string="Técnico">
+                <header>
+                    <button name="action_deactivate"
+                            string="Desactivar"
+                            type="object"
+                            class="btn-danger"
+                            attrs="{'invisible': [('state', '=', 'inactive')]}"
+                            confirm="¿Deseas desactivar este técnico? Sus órdenes activas deberán reasignarse."/>
+                    <button name="action_activate"
+                            string="Activar"
+                            type="object"
+                            class="btn-success"
+                            attrs="{'invisible': [('state', '=', 'active')]}"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="active,inactive"/>
+                </header>
+                <sheet>
+                    <!-- Botón de acceso rápido a órdenes -->
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_orders"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-wrench">
+                            <field name="active_order_count" widget="statinfo"
+                                   string="Órdenes Activas"/>
+                        </button>
+                        <button name="action_view_orders"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-check-circle">
+                            <field name="completed_order_count" widget="statinfo"
+                                   string="Completadas"/>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Nombre completo del técnico"/></h1>
+                    </div>
+
+                    <group>
+                        <group string="Datos personales">
+                            <field name="employee_number"/>
+                            <field name="employee_id"/>
+                            <field name="email" widget="email"/>
+                            <field name="phone" widget="phone"/>
+                            <field name="availability"/>
+                        </group>
+                        <group string="Métricas de rendimiento">
+                            <field name="avg_resolution_days" readonly="1"/>
+                            <field name="recurrence_rate" readonly="1" string="Tasa de reincidencia (%)"/>
+                        </group>
+                    </group>
+
+                    <!-- Especialidades (RF-07) -->
+                    <group string="Especialidades técnicas">
+                        <group>
+                            <field name="specialty_hardware"/>
+                            <field name="specialty_software"/>
+                            <field name="specialty_networks"/>
+                        </group>
+                        <group>
+                            <field name="specialty_electronics"/>
+                            <field name="specialty_other"/>
+                            <field name="specialty_notes"
+                                   attrs="{'invisible': [('specialty_other', '=', False)]}"/>
+                        </group>
+                    </group>
+
+                    <!-- Órdenes asignadas (RF-08) -->
+                    <notebook>
+                        <page string="Órdenes activas" name="active_orders">
+                            <field name="order_ids"
+                                   domain="[('state', 'not in', ['closed'])]"
+                                   readonly="1">
+                                <tree decoration-danger="priority == '3'"
+                                      decoration-warning="priority == '2'">
+                                    <field name="folio"/>
+                                    <field name="client_id"/>
+                                    <field name="equipment_id"/>
+                                    <field name="priority" widget="priority"/>
+                                    <field name="state" widget="badge"/>
+                                    <field name="days_open" string="Días"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         VISTA LISTA — Técnicos (RF-08: Carga de trabajo)
+    ═══════════════════════════════════════════════════════════════════ -->
+    <record id="view_ts_technician_list" model="ir.ui.view">
+        <field name="name">ts.technician.list</field>
+        <field name="model">ts.technician</field>
+        <field name="arch" type="xml">
+            <tree string="Técnicos"
+                  decoration-muted="state == 'inactive'">
+                <field name="employee_number"/>
+                <field name="name"/>
+                <field name="availability" widget="badge"
+                       decoration-success="availability == 'available'"
+                       decoration-warning="availability == 'busy'"
+                       decoration-info="availability == 'leave'"/>
+                <field name="active_order_count" string="Órdenes activas"/>
+                <field name="completed_order_count" string="Completadas"/>
+                <field name="avg_resolution_days" string="Días prom."/>
+                <field name="recurrence_rate" string="Reincidencia (%)"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'active'"
+                       decoration-muted="state == 'inactive'"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Búsqueda de técnicos -->
+    <record id="view_ts_technician_search" model="ir.ui.view">
+        <field name="name">ts.technician.search</field>
+        <field name="model">ts.technician</field>
+        <field name="arch" type="xml">
+            <search string="Buscar Técnicos">
+                <field name="name"/>
+                <field name="employee_number"/>
+                <filter name="active" string="Activos" domain="[('state', '=', 'active')]"/>
+                <filter name="available" string="Disponibles" domain="[('availability', '=', 'available')]"/>
+                <filter name="hardware" string="Hardware" domain="[('specialty_hardware', '=', True)]"/>
+                <filter name="software" string="Software" domain="[('specialty_software', '=', True)]"/>
+                <filter name="networks" string="Redes" domain="[('specialty_networks', '=', True)]"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Acción de técnicos -->
+    <record id="action_ts_technician" model="ir.actions.act_window">
+        <field name="name">Técnicos</field>
+        <field name="res_model">ts.technician</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_active': 1}</field>
+    </record>
+
+</odoo>

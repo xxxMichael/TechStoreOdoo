@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Formulario de tipo de servicio -->
+    <record id="view_ts_service_type_form" model="ir.ui.view">
+        <field name="name">ts.service.type.form</field>
+        <field name="model">ts.service.type</field>
+        <field name="arch" type="xml">
+            <form string="Tipo de Servicio">
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Nombre del tipo de servicio"/></h1>
+                    </div>
+                    <group>
+                        <field name="description" placeholder="Descripción del servicio..."/>
+                        <field name="active" widget="boolean_toggle"/>
+                        <field name="order_count" readonly="1" string="Órdenes con este servicio"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Lista de tipos de servicio -->
+    <record id="view_ts_service_type_list" model="ir.ui.view">
+        <field name="name">ts.service.type.list</field>
+        <field name="model">ts.service.type</field>
+        <field name="arch" type="xml">
+            <tree string="Tipos de Servicio">
+                <field name="name"/>
+                <field name="description"/>
+                <field name="order_count" string="Órdenes"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Acción tipos de servicio -->
+    <record id="action_ts_service_type" model="ir.actions.act_window">
+        <field name="name">Tipos de Servicio</field>
+        <field name="res_model">ts.service.type</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

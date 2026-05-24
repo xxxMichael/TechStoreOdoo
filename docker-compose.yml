@@ -1,0 +1,43 @@
+services:
+
+  db:
+    image: postgres:15
+    container_name: techstore_db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-odoo}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-odoo}
+      POSTGRES_DB: ${POSTGRES_DB:-techstore_db}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    networks:
+      - techstore_net
+
+  odoo:
+    image: odoo:16.0
+    container_name: techstore_odoo
+    depends_on:
+      - db
+    environment:
+      HOST: db
+      USER: ${POSTGRES_USER:-odoo}
+      PASSWORD: ${POSTGRES_PASSWORD:-odoo}
+    volumes:
+      - ./custom_addons:/mnt/extra-addons
+      - ./odoo.conf:/etc/odoo/odoo.conf
+      - odoo_data:/var/lib/odoo
+    ports:
+      - "${ODOO_PORT:-8069}:8069"
+    restart: unless-stopped
+    networks:
+      - techstore_net
+
+volumes:
+  postgres_data:
+  odoo_data:
+
+networks:
+  techstore_net:
+    driver: bridge

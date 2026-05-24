@@ -1,0 +1,2 @@
+# Carpeta de recursos estáticos del módulo TechStore Maintenance
+# Coloca aquí el icono del módulo como: icon.png (tamaño recomendado: 128x128 px)
