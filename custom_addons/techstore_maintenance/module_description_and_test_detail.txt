@@ -1,0 +1,162 @@
+DESCRIPCION DEL MODULO Y DETALLE DE PRUEBAS - TECHSTORE MAINTENANCE
+Fecha: 2026-05-29 19:35:00
+
+1. QUE HACE EL MODULO
+
+El modulo TechStore Maintenance para Odoo 16 gestiona el ciclo completo de mantenimiento tecnico de equipos de clientes.
+
+Funciones principales:
+- Administracion de clientes vinculados a equipos.
+- Registro de tipos de servicio tecnico.
+- Registro y administracion de tecnicos con especialidades, estado y disponibilidad.
+- Registro de equipos con datos como marca, modelo, numero de serie y cliente propietario.
+- Creacion de ordenes de mantenimiento con folio, prioridad, fecha de recepcion, problema reportado y condicion fisica.
+- Flujo operativo de ordenes por estados: received, diagnosis, repair, ready, delivered y closed.
+- Asignacion de tecnicos a ordenes.
+- Registro de diagnostico, trabajos realizados, repuestos usados y resolucion.
+- Generacion de auditoria por cambios relevantes en la orden.
+- Exposicion de una API HTTP para operaciones CRUD y acciones de negocio.
+- Exposicion de un dashboard con metricas operativas y de calidad.
+
+API principal detectada:
+- GET/POST `/api/techstore/<resource>`
+- GET/PATCH/PUT/DELETE `/api/techstore/<resource>/<id>`
+- GET `/api/techstore/dashboard`
+- GET `/api/techstore/maintenance-orders/<id>/audit-logs`
+- POST `/api/techstore/maintenance-orders/<id>/actions/<action>`
+- POST `/api/techstore/technicians/<id>/actions/<action>`
+
+Recursos evaluados:
+- clients
+- service-types
+- technicians
+- equipment
+- maintenance-orders
+- audit-logs
+
+2. DETALLE DE LAS PRUEBAS EJECUTADAS
+
+Las pruebas se ejecutaron directo contra la API autenticada en `http://localhost:8069`, usando sesion de Odoo y validando comportamiento real del modulo cargado en la base `odoo2`.
+
+2.1 Pruebas funcionales
+
+PF-01
+- Objetivo: consultar dashboard general.
+- Endpoint: GET `/api/techstore/dashboard`.
+- Validacion: respuesta HTTP 200 con metricas operativas.
+
+PF-02
+- Objetivo: crear una orden de mantenimiento.
+- Endpoint: POST `/api/techstore/maintenance-orders`.
+- Validacion: respuesta HTTP 201 y estado inicial `received`.
+
+PF-03
+- Objetivo: asignar tecnico a la orden.
+- Endpoint: POST `/api/techstore/maintenance-orders/{id}/actions/assign-technician`.
+- Validacion: respuesta HTTP 200 y tecnico asignado correctamente.
+
+PF-04
+- Objetivo: mover la orden a diagnostico.
+- Endpoint: POST `/api/techstore/maintenance-orders/{id}/actions/start-diagnosis`.
+- Validacion: cambio de estado a `diagnosis`.
+
+PF-05
+- Objetivo: comprobar regla de negocio para bloquear reparacion sin diagnostico.
+- Endpoint: POST `/api/techstore/maintenance-orders/{id}/actions/start-repair`.
+- Validacion: respuesta HTTP 400.
+
+PF-06
+- Objetivo: actualizar el diagnostico de la orden.
+- Endpoint: PATCH `/api/techstore/maintenance-orders/{id}`.
+- Validacion: persistencia del campo `diagnosis`.
+
+PF-07
+- Objetivo: pasar la orden a reparacion.
+- Endpoint: POST `/api/techstore/maintenance-orders/{id}/actions/start-repair`.
+- Validacion: cambio de estado a `repair`.
+
+PF-08
+- Objetivo: comprobar regla de negocio para bloquear listo sin resolucion.
+- Endpoint: POST `/api/techstore/maintenance-orders/{id}/actions/mark-ready`.
+- Validacion: respuesta HTTP 400.
+
+PF-09
+- Objetivo: actualizar la resolucion de la orden.
+- Endpoint: PATCH `/api/techstore/maintenance-orders/{id}`.
+- Validacion: persistencia del campo `resolution`.
+
+PF-10
+- Objetivo: marcar la orden como lista para entrega.
+- Endpoint: POST `/api/techstore/maintenance-orders/{id}/actions/mark-ready`.
+- Validacion: cambio de estado a `ready`.
+
+PF-11
+- Objetivo: marcar la orden como entregada.
+- Endpoint: POST `/api/techstore/maintenance-orders/{id}/actions/mark-delivered`.
+- Validacion: cambio de estado a `delivered`.
+
+PF-12
+- Objetivo: cerrar la orden.
+- Endpoint: POST `/api/techstore/maintenance-orders/{id}/actions/close`.
+- Validacion: cambio de estado a `closed`.
+
+PF-13
+- Objetivo: consultar la trazabilidad de auditoria.
+- Endpoint: GET `/api/techstore/maintenance-orders/{id}/audit-logs`.
+- Validacion: existencia de eventos de auditoria asociados a la orden.
+
+2.2 Pruebas de seguridad
+
+PS-01
+- Objetivo: verificar que la API no exponga datos sin sesion.
+- Endpoint: GET anonimo `/api/techstore/dashboard`.
+- Validacion: redireccion a login o rechazo de acceso.
+
+PS-02
+- Objetivo: verificar manejo de recurso inexistente.
+- Endpoint: GET `/api/techstore/no-such-resource`.
+- Validacion: respuesta HTTP 404.
+
+PS-03
+- Objetivo: impedir escritura directa en logs de auditoria.
+- Endpoint: POST `/api/techstore/audit-logs`.
+- Validacion: respuesta HTTP 400.
+
+PS-04
+- Objetivo: validar rechazo de JSON malformado.
+- Endpoint: POST `/api/techstore/clients` con cuerpo invalido.
+- Validacion: respuesta HTTP 400.
+
+PS-05
+- Objetivo: rechazar acciones no definidas.
+- Endpoint: POST `/api/techstore/maintenance-orders/{id}/actions/nope`.
+- Validacion: respuesta HTTP 404.
+
+2.3 Pruebas de rendimiento
+
+PR-01
+- Objetivo: medir tiempo de respuesta del dashboard.
+- Endpoint: GET `/api/techstore/dashboard`.
+- Metodo: 10 iteraciones consecutivas.
+- Resultado observado: latencia baja y estable.
+
+PR-02
+- Objetivo: medir tiempo de respuesta del listado de ordenes.
+- Endpoint: GET `/api/techstore/maintenance-orders?limit=20`.
+- Metodo: 10 iteraciones consecutivas.
+- Resultado observado: latencia baja y estable.
+
+3. RESUMEN GENERAL
+
+- Total de casos ejecutados: 20
+- Casos exitosos: 20
+- Casos fallidos: 0
+- Tiempo promedio global: 0.0294s
+- Evaluacion general: el modulo cumple correctamente en los flujos API probados y presenta buen tiempo de respuesta para la muestra evaluada.
+
+4. ARCHIVOS RELACIONADOS
+
+- `api_test_cases.txt`: listado resumido de casos de prueba.
+- `api_test_results.txt`: resultados detallados de la ejecucion.
+- `api_performance_security_report.txt`: analisis de rendimiento, seguridad y mejoras propuestas.
+- `api_quality_runner.py`: script que ejecuta las pruebas contra la API.

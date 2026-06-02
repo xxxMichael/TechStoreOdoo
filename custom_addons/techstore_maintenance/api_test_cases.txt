@@ -1,0 +1,28 @@
+DISENO DE CASOS DE PRUEBA - API TECHSTORE MAINTENANCE
+Fecha de generacion: 2026-05-29 19:46:48
+
+PRUEBAS FUNCIONALES
+PF-01 | GET /api/techstore/dashboard | Validar consulta de metricas generales.
+PF-02 | POST /api/techstore/maintenance-orders | Validar creacion de orden con datos obligatorios.
+PF-03 | POST /api/techstore/maintenance-orders/{id}/actions/assign-technician | Validar asignacion de tecnico.
+PF-04 | POST /api/techstore/maintenance-orders/{id}/actions/start-diagnosis | Validar cambio de estado a diagnosis.
+PF-05 | POST /api/techstore/maintenance-orders/{id}/actions/start-repair | Validar bloqueo sin diagnostico.
+PF-06 | PATCH /api/techstore/maintenance-orders/{id} | Validar actualizacion de diagnostico.
+PF-07 | POST /api/techstore/maintenance-orders/{id}/actions/start-repair | Validar cambio a repair.
+PF-08 | POST /api/techstore/maintenance-orders/{id}/actions/mark-ready | Validar bloqueo sin resolucion.
+PF-09 | PATCH /api/techstore/maintenance-orders/{id} | Validar actualizacion de resolucion.
+PF-10 | POST /api/techstore/maintenance-orders/{id}/actions/mark-ready | Validar cambio a ready.
+PF-11 | POST /api/techstore/maintenance-orders/{id}/actions/mark-delivered | Validar cambio a delivered.
+PF-12 | POST /api/techstore/maintenance-orders/{id}/actions/close | Validar cierre de la orden.
+PF-13 | GET /api/techstore/maintenance-orders/{id}/audit-logs | Validar trazabilidad por auditoria.
+
+PRUEBAS DE SEGURIDAD
+PS-01 | GET anonimo /api/techstore/dashboard | Verificar que se requiera sesion autenticada.
+PS-02 | GET /api/techstore/no-such-resource | Verificar manejo de recurso inexistente.
+PS-03 | POST /api/techstore/audit-logs | Verificar bloqueo de escritura en auditoria.
+PS-04 | POST /api/techstore/clients con JSON invalido | Verificar validacion de entrada.
+PS-05 | POST /api/techstore/maintenance-orders/{id}/actions/nope | Verificar rechazo de accion no autorizada.
+
+PRUEBAS DE RENDIMIENTO
+PR-01 | 10 llamadas GET /api/techstore/dashboard | Medir latencia promedio, minima y maxima.
+PR-02 | 10 llamadas GET /api/techstore/maintenance-orders?limit=20 | Medir latencia promedio, minima y maxima.

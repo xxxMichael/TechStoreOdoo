@@ -25,6 +25,11 @@
                            statusbar_visible="active,inactive"/>
                 </header>
                 <sheet>
+                    <widget name="web_ribbon" title="Inactivo" bg_color="bg-secondary"
+                            attrs="{'invisible': [('state', '!=', 'inactive')]}"/>
+                    <widget name="web_ribbon" title="Ocupado" bg_color="bg-warning"
+                            attrs="{'invisible': [('availability', '!=', 'busy')]}"/>
+
                     <!-- Botón de acceso rápido a órdenes -->
                     <div class="oe_button_box" name="button_box">
                         <button name="action_view_orders"
@@ -46,6 +51,18 @@
                     <div class="oe_title">
                         <h1><field name="name" placeholder="Nombre completo del técnico"/></h1>
                     </div>
+
+                    <group string="Resumen" col="4">
+                        <field name="state" readonly="1" widget="badge"
+                               decoration-success="state == 'active'"
+                               decoration-muted="state == 'inactive'"/>
+                        <field name="availability" readonly="1" widget="badge"
+                               decoration-success="availability == 'available'"
+                               decoration-warning="availability == 'busy'"
+                               decoration-info="availability == 'leave'"/>
+                        <field name="active_order_count" readonly="1"/>
+                        <field name="completed_order_count" readonly="1"/>
+                    </group>
 
                     <group>
                         <group string="Datos personales">
@@ -90,6 +107,20 @@
                                     <field name="priority" widget="priority"/>
                                     <field name="state" widget="badge"/>
                                     <field name="days_open" string="Días"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Órdenes cerradas" name="closed_orders">
+                            <field name="order_ids"
+                                   domain="[('state', '=', 'closed')]"
+                                   readonly="1">
+                                <tree>
+                                    <field name="folio"/>
+                                    <field name="client_id"/>
+                                    <field name="service_type_id"/>
+                                    <field name="close_date"/>
+                                    <field name="days_open" string="Días"/>
+                                    <field name="reopened" optional="hide"/>
                                 </tree>
                             </field>
                         </page>
@@ -139,10 +170,16 @@
                 <field name="name"/>
                 <field name="employee_number"/>
                 <filter name="active" string="Activos" domain="[('state', '=', 'active')]"/>
+                <filter name="inactive" string="Inactivos" domain="[('state', '=', 'inactive')]"/>
                 <filter name="available" string="Disponibles" domain="[('availability', '=', 'available')]"/>
+                <filter name="busy" string="Ocupados" domain="[('availability', '=', 'busy')]"/>
                 <filter name="hardware" string="Hardware" domain="[('specialty_hardware', '=', True)]"/>
                 <filter name="software" string="Software" domain="[('specialty_software', '=', True)]"/>
                 <filter name="networks" string="Redes" domain="[('specialty_networks', '=', True)]"/>
+                <group expand="0" string="Agrupar por">
+                    <filter name="group_availability" string="Disponibilidad" context="{'group_by': 'availability'}"/>
+                    <filter name="group_state" string="Estado" context="{'group_by': 'state'}"/>
+                </group>
             </search>
         </field>
     </record>

@@ -14,6 +14,11 @@
                            statusbar_visible="operational,faulty,under_maintenance,retired"/>
                 </header>
                 <sheet>
+                    <widget name="web_ribbon" title="Archivado" bg_color="bg-secondary"
+                            attrs="{'invisible': [('active', '=', True)]}"/>
+                    <widget name="web_ribbon" title="En mantenimiento" bg_color="bg-warning"
+                            attrs="{'invisible': [('current_state', '!=', 'under_maintenance')]}"/>
+
                     <!-- Botón acceso rápido a historial de mantenimientos (RF-12) -->
                     <div class="oe_button_box" name="button_box">
                         <button name="action_view_maintenance_history"
@@ -28,6 +33,17 @@
                     <div class="oe_title">
                         <h1><field name="name" placeholder="Nombre del equipo"/></h1>
                     </div>
+
+                    <group string="Resumen" col="4">
+                        <field name="client_id" readonly="1"/>
+                        <field name="current_state" readonly="1" widget="badge"
+                               decoration-success="current_state == 'operational'"
+                               decoration-danger="current_state == 'faulty'"
+                               decoration-warning="current_state == 'under_maintenance'"
+                               decoration-muted="current_state == 'retired'"/>
+                        <field name="order_count" readonly="1"/>
+                        <field name="active" widget="boolean_toggle"/>
+                    </group>
 
                     <group>
                         <group string="Información del equipo">
@@ -116,6 +132,10 @@
                         domain="[('current_state', '=', 'faulty')]"/>
                 <filter name="in_maintenance" string="En mantenimiento"
                         domain="[('current_state', '=', 'under_maintenance')]"/>
+                <filter name="retired" string="Retirados"
+                        domain="[('current_state', '=', 'retired')]"/>
+                <filter name="archived" string="Archivados"
+                        domain="[('active', '=', False)]"/>
                 <separator/>
                 <group expand="0" string="Agrupar por">
                     <filter name="group_client" string="Cliente" context="{'group_by': 'client_id'}"/>
@@ -131,6 +151,7 @@
         <field name="name">Equipos de Clientes</field>
         <field name="res_model">ts.equipment</field>
         <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_operational': 1}</field>
     </record>
 
 </odoo>

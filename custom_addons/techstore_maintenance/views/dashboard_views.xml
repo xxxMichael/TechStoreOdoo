@@ -22,6 +22,41 @@
                 <sheet>
                     <h1 class="text-center mb-4">📊 Dashboard de Gestión — TechStore Maintenance</h1>
 
+                    <div class="row mb-4">
+                        <div class="col-md-3 col-6 text-center">
+                            <div class="p-3 border rounded bg-light">
+                                <div class="h2 font-weight-bold text-dark">
+                                    <field name="total_orders" readonly="1"/>
+                                </div>
+                                <div class="text-muted small">Total de Órdenes</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6 text-center">
+                            <div class="p-3 border rounded bg-light">
+                                <div class="h2 font-weight-bold text-primary">
+                                    <field name="count_active" readonly="1"/>
+                                </div>
+                                <div class="text-muted small">Órdenes Activas</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6 text-center">
+                            <div class="p-3 border rounded bg-light">
+                                <div class="h2 font-weight-bold text-success">
+                                    <field name="count_delivered" readonly="1"/>
+                                </div>
+                                <div class="text-muted small">Entregadas</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6 text-center">
+                            <div class="p-3 border rounded bg-light">
+                                <div class="h2 font-weight-bold text-secondary">
+                                    <field name="count_closed" readonly="1"/>
+                                </div>
+                                <div class="text-muted small">Cerradas</div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- ── Sección 1: Resumen de órdenes por estado ─────────── -->
                     <h3>Estado de Órdenes</h3>
                     <div class="o_field_widget o_stat_info row mt-2 mb-4">
@@ -112,10 +147,34 @@
                         </div>
                         <div class="col-md-4">
                             <div class="p-3 border rounded text-center">
+                                <div class="h3 text-danger font-weight-bold">
+                                    <field name="count_overdue" readonly="1"/>
+                                </div>
+                                <div>Órdenes Vencidas</div>
+                                <button name="action_view_overdue" type="object"
+                                        class="btn btn-sm btn-danger mt-2"
+                                        attrs="{'invisible': [('count_overdue', '=', 0)]}">
+                                    Revisar →
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="p-3 border rounded text-center">
                                 <div class="h3 text-info font-weight-bold">
                                     <field name="avg_resolution_days" readonly="1"/>
                                 </div>
                                 <div>Días Prom. Resolución</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-3 border rounded text-center">
+                                <div class="h3 text-secondary font-weight-bold">
+                                    <field name="recurrence_rate" readonly="1"/>%
+                                </div>
+                                <div>Tasa de Reincidencia</div>
                             </div>
                         </div>
                     </div>

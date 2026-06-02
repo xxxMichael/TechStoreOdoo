@@ -1,0 +1,169 @@
+RESULTADOS DE EJECUCION - API TECHSTORE MAINTENANCE
+Fecha de ejecucion: 2026-05-29 19:46:49
+Base URL: http://localhost:8069
+Total de casos: 20
+Casos exitosos: 20
+Casos fallidos: 0
+
+FUNCIONAL
+Caso: PF-01
+Objetivo: Consultar dashboard general
+Solicitud: GET /api/techstore/dashboard
+Esperado: HTTP 200 con metricas clave
+Obtenido: HTTP 200 | {"name": "Dashboard TechStore", "total_orders": 0, "count_received": 0, "count_diagnosis": 0, "count_repair": 0, "count_ready": 0, "count_delivered": 0, "count_closed": 0, "count_active": 0, "count_unassigned": 0, "count_critical": 0, "count_overdue": 0, "avg_resolution_days": 0.0, "recurrence_rate": 0.0, "iso_correctness": 100.0, "iso_correctness_semaphore": "green", "iso_efficiency": 100.0, "iso_efficiency_semaphore": "green", "iso_availability": "Operativo ✅"}
+Estado: PASS
+Tiempo: 0.0094s
+
+Caso: PF-02
+Objetivo: Crear orden de mantenimiento
+Solicitud: POST /api/techstore/maintenance-orders
+Esperado: HTTP 201 y estado received
+Obtenido: HTTP 201 | {"id": 3, "folio": "TS-2026-0003", "client_id": {"id": 79, "name": "Cliente API 20260529194648"}, "equipment_id": {"id": 3, "name": "[SN-20260529194648] Lenovo ThinkPad Test — Cliente API 20260529194648"}, "service_type_id": {"id": 11, "name": "Servicio API 20260529194648"}, "technician_id": false, "state": "received", "priority": "2", "priority_kanban": true, "reception_date": "2026-05-29", "close_date": false, "days_open": 1, "problem_description": "No enciende despues de una actualizacion.", 
+Estado: PASS
+Tiempo: 0.0249s
+
+Caso: PF-03
+Objetivo: Asignar tecnico a la orden
+Solicitud: POST /api/techstore/maintenance-orders/{id}/actions/assign-technician
+Esperado: HTTP 200 y tecnico asignado
+Obtenido: HTTP 200 | {"id": 3, "folio": "TS-2026-0003", "client_id": {"id": 79, "name": "Cliente API 20260529194648"}, "equipment_id": {"id": 3, "name": "[SN-20260529194648] Lenovo ThinkPad Test — Cliente API 20260529194648"}, "service_type_id": {"id": 11, "name": "Servicio API 20260529194648"}, "technician_id": {"id": 3, "name": "Tecnico API 20260529194648"}, "state": "received", "priority": "2", "priority_kanban": true, "reception_date": "2026-05-29", "close_date": false, "days_open": 1, "problem_description": "No
+Estado: PASS
+Tiempo: 0.0414s
+
+Caso: PF-04
+Objetivo: Mover orden a diagnostico
+Solicitud: POST /api/techstore/maintenance-orders/{id}/actions/start-diagnosis
+Esperado: HTTP 200 y estado diagnosis
+Obtenido: HTTP 200 | {"id": 3, "folio": "TS-2026-0003", "client_id": {"id": 79, "name": "Cliente API 20260529194648"}, "equipment_id": {"id": 3, "name": "[SN-20260529194648] Lenovo ThinkPad Test — Cliente API 20260529194648"}, "service_type_id": {"id": 11, "name": "Servicio API 20260529194648"}, "technician_id": {"id": 3, "name": "Tecnico API 20260529194648"}, "state": "diagnosis", "priority": "2", "priority_kanban": true, "reception_date": "2026-05-29", "close_date": false, "days_open": 1, "problem_description": "N
+Estado: PASS
+Tiempo: 0.0229s
+
+Caso: PF-05
+Objetivo: Bloquear paso a reparacion sin diagnostico
+Solicitud: POST /api/techstore/maintenance-orders/{id}/actions/start-repair
+Esperado: HTTP 400 por diagnostico faltante
+Obtenido: HTTP 400 | {"error": "Debes registrar el diagnóstico antes de pasar a reparación."}
+Estado: PASS
+Tiempo: 0.0282s
+
+Caso: PF-06
+Objetivo: Actualizar diagnostico de la orden
+Solicitud: PATCH /api/techstore/maintenance-orders/{id}
+Esperado: HTTP 200 y diagnostico persistido
+Obtenido: HTTP 200 | {"id": 3, "folio": "TS-2026-0003", "client_id": {"id": 79, "name": "Cliente API 20260529194648"}, "equipment_id": {"id": 3, "name": "[SN-20260529194648] Lenovo ThinkPad Test — Cliente API 20260529194648"}, "service_type_id": {"id": 11, "name": "Servicio API 20260529194648"}, "technician_id": {"id": 3, "name": "Tecnico API 20260529194648"}, "state": "diagnosis", "priority": "2", "priority_kanban": true, "reception_date": "2026-05-29", "close_date": false, "days_open": 1, "problem_description": "N
+Estado: PASS
+Tiempo: 0.0419s
+
+Caso: PF-07
+Objetivo: Mover orden a reparacion
+Solicitud: POST /api/techstore/maintenance-orders/{id}/actions/start-repair
+Esperado: HTTP 200 y estado repair
+Obtenido: HTTP 200 | {"id": 3, "folio": "TS-2026-0003", "client_id": {"id": 79, "name": "Cliente API 20260529194648"}, "equipment_id": {"id": 3, "name": "[SN-20260529194648] Lenovo ThinkPad Test — Cliente API 20260529194648"}, "service_type_id": {"id": 11, "name": "Servicio API 20260529194648"}, "technician_id": {"id": 3, "name": "Tecnico API 20260529194648"}, "state": "repair", "priority": "2", "priority_kanban": true, "reception_date": "2026-05-29", "close_date": false, "days_open": 1, "problem_description": "No e
+Estado: PASS
+Tiempo: 0.0391s
+
+Caso: PF-08
+Objetivo: Bloquear listo sin resolucion
+Solicitud: POST /api/techstore/maintenance-orders/{id}/actions/mark-ready
+Esperado: HTTP 400 por resolucion faltante
+Obtenido: HTTP 400 | {"error": "Debes registrar la solución aplicada antes de marcar como listo."}
+Estado: PASS
+Tiempo: 0.0284s
+
+Caso: PF-09
+Objetivo: Actualizar resolucion de la orden
+Solicitud: PATCH /api/techstore/maintenance-orders/{id}
+Esperado: HTTP 200 y resolucion persistida
+Obtenido: HTTP 200 | {"id": 3, "folio": "TS-2026-0003", "client_id": {"id": 79, "name": "Cliente API 20260529194648"}, "equipment_id": {"id": 3, "name": "[SN-20260529194648] Lenovo ThinkPad Test — Cliente API 20260529194648"}, "service_type_id": {"id": 11, "name": "Servicio API 20260529194648"}, "technician_id": {"id": 3, "name": "Tecnico API 20260529194648"}, "state": "repair", "priority": "2", "priority_kanban": true, "reception_date": "2026-05-29", "close_date": false, "days_open": 1, "problem_description": "No e
+Estado: PASS
+Tiempo: 0.0249s
+
+Caso: PF-10
+Objetivo: Marcar orden lista para entrega
+Solicitud: POST /api/techstore/maintenance-orders/{id}/actions/mark-ready
+Esperado: HTTP 200 y estado ready
+Obtenido: HTTP 200 | {"id": 3, "folio": "TS-2026-0003", "client_id": {"id": 79, "name": "Cliente API 20260529194648"}, "equipment_id": {"id": 3, "name": "[SN-20260529194648] Lenovo ThinkPad Test — Cliente API 20260529194648"}, "service_type_id": {"id": 11, "name": "Servicio API 20260529194648"}, "technician_id": {"id": 3, "name": "Tecnico API 20260529194648"}, "state": "ready", "priority": "2", "priority_kanban": true, "reception_date": "2026-05-29", "close_date": false, "days_open": 1, "problem_description": "No en
+Estado: PASS
+Tiempo: 0.0509s
+
+Caso: PF-11
+Objetivo: Marcar orden entregada
+Solicitud: POST /api/techstore/maintenance-orders/{id}/actions/mark-delivered
+Esperado: HTTP 200 y estado delivered
+Obtenido: HTTP 200 | {"id": 3, "folio": "TS-2026-0003", "client_id": {"id": 79, "name": "Cliente API 20260529194648"}, "equipment_id": {"id": 3, "name": "[SN-20260529194648] Lenovo ThinkPad Test — Cliente API 20260529194648"}, "service_type_id": {"id": 11, "name": "Servicio API 20260529194648"}, "technician_id": {"id": 3, "name": "Tecnico API 20260529194648"}, "state": "delivered", "priority": "2", "priority_kanban": true, "reception_date": "2026-05-29", "close_date": false, "days_open": 1, "problem_description": "N
+Estado: PASS
+Tiempo: 0.0660s
+
+Caso: PF-12
+Objetivo: Cerrar orden entregada
+Solicitud: POST /api/techstore/maintenance-orders/{id}/actions/close
+Esperado: HTTP 200 y estado closed
+Obtenido: HTTP 200 | {"id": 3, "folio": "TS-2026-0003", "client_id": {"id": 79, "name": "Cliente API 20260529194648"}, "equipment_id": {"id": 3, "name": "[SN-20260529194648] Lenovo ThinkPad Test — Cliente API 20260529194648"}, "service_type_id": {"id": 11, "name": "Servicio API 20260529194648"}, "technician_id": {"id": 3, "name": "Tecnico API 20260529194648"}, "state": "closed", "priority": "2", "priority_kanban": true, "reception_date": "2026-05-29", "close_date": "2026-05-30", "days_open": 1, "problem_description"
+Estado: PASS
+Tiempo: 0.0900s
+
+Caso: PF-13
+Objetivo: Consultar bitacora de auditoria de la orden
+Solicitud: GET /api/techstore/maintenance-orders/{id}/audit-logs
+Esperado: HTTP 200 con eventos de auditoria
+Obtenido: HTTP 200 | {"order_id": 3, "folio": "TS-2026-0003", "items": [{"id": 21, "order_id": {"id": 3, "name": "TS-2026-0003"}, "user_id": {"id": 2, "name": "Mitchell Admin"}, "event_type": "Orden cerrada", "description": "Fecha de cierre: 2026-05-30", "event_date": "2026-05-30 00:46:49", "create_date": "2026-05-30 00:46:49.262521"}, {"id": 20, "order_id": {"id": 3, "name": "TS-2026-0003"}, "user_id": {"id": 2, "name": "Mitchell Admin"}, "event_type": "Cambio de estado", "description": "Listo para Entrega → Entreg
+Estado: PASS
+Tiempo: 0.1068s
+
+SEGURIDAD
+Caso: PS-01
+Objetivo: Verificar que la API no exponga datos sin sesion
+Solicitud: GET anonimo /api/techstore/dashboard
+Esperado: Redireccion o rechazo sin JSON sensible
+Obtenido: HTTP 303 | "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2 Final//EN\">\n<title>Redirecting...</title>\n<h1>Redirecting...</h1>\n<p>You should be redirected automatically to target URL: <a href=\"/web/login?redirect=%2Fapi%2Ftechstore%2Fdashboard%3F\">/web/login?redirect=%2Fapi%2Ftechstore%2Fdashboard%3F</a>.  If not cl"
+Estado: PASS
+Tiempo: 0.0172s
+
+Caso: PS-02
+Objetivo: Rechazar recursos inexistentes
+Solicitud: GET /api/techstore/no-such-resource
+Esperado: HTTP 404
+Obtenido: HTTP 404 | {"error": "Recurso no encontrado."}
+Estado: PASS
+Tiempo: 0.0170s
+
+Caso: PS-03
+Objetivo: Bloquear creacion directa del log de auditoria
+Solicitud: POST /api/techstore/audit-logs
+Esperado: HTTP 400
+Obtenido: HTTP 400 | {"error": "El recurso no permite operaciones de create."}
+Estado: PASS
+Tiempo: 0.0135s
+
+Caso: PS-04
+Objetivo: Validar rechazo de JSON invalido
+Solicitud: POST /api/techstore/clients con cuerpo malformado
+Esperado: HTTP 400
+Obtenido: HTTP 400 | {"error": "El cuerpo de la solicitud debe ser JSON valido."}
+Estado: PASS
+Tiempo: 0.0119s
+
+Caso: PS-05
+Objetivo: Rechazar acciones no definidas
+Solicitud: POST /api/techstore/maintenance-orders/{id}/actions/nope
+Esperado: HTTP 404
+Obtenido: HTTP 404 | {"error": "Accion no encontrada."}
+Estado: PASS
+Tiempo: 0.0117s
+
+RENDIMIENTO
+Caso: PR-01
+Objetivo: Medir latencia repetida del dashboard
+Solicitud: 10 llamadas GET /api/techstore/dashboard
+Esperado: Promedio estable y sin errores
+Obtenido: avg=0.0136s, min=0.0109s, max=0.0165s
+Estado: PASS
+Tiempo: 0.0136s
+
+Caso: PR-02
+Objetivo: Medir latencia repetida del listado de ordenes
+Solicitud: 10 llamadas GET /api/techstore/maintenance-orders?limit=20
+Esperado: Promedio estable y sin errores
+Obtenido: avg=0.0152s, min=0.0117s, max=0.0275s
+Estado: PASS
+Tiempo: 0.0152s
