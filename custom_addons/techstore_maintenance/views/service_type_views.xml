@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Formulario de tipo de servicio -->
+    <!-- ═══════════════════════════════════════════════════════════════════
+         VISTA FORMULARIO — Tipo de Servicio
+    ═══════════════════════════════════════════════════════════════════ -->
     <record id="view_ts_service_type_form" model="ir.ui.view">
         <field name="name">ts.service.type.form</field>
         <field name="model">ts.service.type</field>
@@ -10,16 +12,21 @@
                 <sheet>
                     <widget name="web_ribbon" title="Archivado" bg_color="bg-secondary"
                             attrs="{'invisible': [('active', '=', True)]}"/>
+
                     <div class="oe_title">
                         <h1><field name="name" placeholder="Nombre del tipo de servicio"/></h1>
                     </div>
-                    <group col="4" string="Resumen">
-                        <field name="active" widget="boolean_toggle"/>
-                        <field name="order_count" readonly="1" string="Órdenes con este servicio"/>
-                    </group>
+
                     <group>
-                        <field name="description" placeholder="Descripción del servicio..."/>
+                        <group string="Información general">
+                            <field name="active" widget="boolean_toggle"/>
+                            <field name="order_count" readonly="1"/>
+                        </group>
+                        <group string="Descripción">
+                            <field name="description" placeholder="Descripción del servicio..." nolabel="1"/>
+                        </group>
                     </group>
+
                     <notebook>
                         <page string="Órdenes relacionadas" name="orders">
                             <field name="order_ids" readonly="1">
@@ -38,7 +45,9 @@
         </field>
     </record>
 
-    <!-- Lista de tipos de servicio -->
+    <!-- ═══════════════════════════════════════════════════════════════════
+         VISTA LISTA — Tipos de Servicio
+    ═══════════════════════════════════════════════════════════════════ -->
     <record id="view_ts_service_type_list" model="ir.ui.view">
         <field name="name">ts.service.type.list</field>
         <field name="model">ts.service.type</field>
@@ -52,14 +61,17 @@
         </field>
     </record>
 
+    <!-- Búsqueda de tipos de servicio -->
     <record id="view_ts_service_type_search" model="ir.ui.view">
         <field name="name">ts.service.type.search</field>
         <field name="model">ts.service.type</field>
         <field name="arch" type="xml">
             <search string="Buscar Tipos de Servicio">
                 <field name="name"/>
+                <separator/>
                 <filter name="active" string="Activos" domain="[('active', '=', True)]"/>
                 <filter name="inactive" string="Archivados" domain="[('active', '=', False)]"/>
+                <separator/>
                 <group expand="0" string="Agrupar por">
                     <filter name="group_active" string="Estado" context="{'group_by': 'active'}"/>
                 </group>
