@@ -1,0 +1,20 @@
+{
+  "name": "techstore-odoo-e2e",
+  "version": "1.0.0",
+  "description": "E2E Cypress Tests for Odoo TechStore Maintenance",
+  "main": "index.js",
+  "scripts": {
+    "test": "cypress run",
+    "cypress:open": "cypress open"
+  },
+  "keywords": [
+    "odoo",
+    "cypress",
+    "e2e"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "cypress": "^13.11.0"
+  }
+}
