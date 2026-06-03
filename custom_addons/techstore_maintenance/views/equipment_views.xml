@@ -19,7 +19,6 @@
                     <widget name="web_ribbon" title="En mantenimiento" bg_color="bg-warning"
                             attrs="{'invisible': [('current_state', '!=', 'under_maintenance')]}"/>
 
-                    <!-- Botón acceso rápido a historial de mantenimientos (RF-12) -->
                     <div class="oe_button_box" name="button_box">
                         <button name="action_view_maintenance_history"
                                 type="object"
@@ -34,20 +33,8 @@
                         <h1><field name="name" placeholder="Nombre del equipo"/></h1>
                     </div>
 
-                    <group string="Resumen" col="4">
-                        <field name="client_id" readonly="1"/>
-                        <field name="current_state" readonly="1" widget="badge"
-                               decoration-success="current_state == 'operational'"
-                               decoration-danger="current_state == 'faulty'"
-                               decoration-warning="current_state == 'under_maintenance'"
-                               decoration-muted="current_state == 'retired'"/>
-                        <field name="order_count" readonly="1"/>
-                        <field name="active" widget="boolean_toggle"/>
-                    </group>
-
                     <group>
                         <group string="Información del equipo">
-                            <!-- RF-11: Tipo, marca, modelo, número de serie -->
                             <field name="equipment_type"/>
                             <field name="brand"/>
                             <field name="model_name"/>
@@ -55,18 +42,22 @@
                         </group>
                         <group string="Propietario y estado">
                             <field name="client_id"/>
-                            <field name="current_state"/>
+                            <field name="current_state" widget="badge"
+                                   decoration-success="current_state == 'operational'"
+                                   decoration-danger="current_state == 'faulty'"
+                                   decoration-warning="current_state == 'under_maintenance'"
+                                   decoration-muted="current_state == 'retired'"/>
+                            <field name="order_count" readonly="1"/>
                             <field name="active" widget="boolean_toggle"/>
                         </group>
                     </group>
 
-                    <group>
-                        <field name="notes" placeholder="Observaciones generales del equipo..."/>
+                    <group string="Observaciones">
+                        <field name="notes" placeholder="Observaciones generales del equipo..." nolabel="1"/>
                     </group>
 
-                    <!-- RF-12: Historial de mantenimientos -->
                     <notebook>
-                        <page string="📋 Historial de Mantenimientos" name="history">
+                        <page string="Historial de Mantenimientos" name="history">
                             <field name="order_ids" readonly="1">
                                 <tree string="Historial" create="false" edit="false">
                                     <field name="folio"/>
@@ -126,6 +117,7 @@
                 <field name="client_id" string="Cliente"/>
                 <field name="brand" string="Marca"/>
                 <field name="model_name" string="Modelo"/>
+                <separator/>
                 <filter name="operational" string="Operativos"
                         domain="[('current_state', '=', 'operational')]"/>
                 <filter name="faulty" string="Con falla"
@@ -134,6 +126,7 @@
                         domain="[('current_state', '=', 'under_maintenance')]"/>
                 <filter name="retired" string="Retirados"
                         domain="[('current_state', '=', 'retired')]"/>
+                <separator/>
                 <filter name="archived" string="Archivados"
                         domain="[('active', '=', False)]"/>
                 <separator/>
