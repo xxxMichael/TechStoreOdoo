@@ -39,3 +39,8 @@ sessions/
 #excluir words pdfs y mds
 *.pdf
 *.docx
+
+# Cypress y Node.js
+node_modules/
+cypress/videos/
+cypress/screenshots/

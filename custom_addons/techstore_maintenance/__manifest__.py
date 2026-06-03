@@ -31,11 +31,6 @@
         'views/menu_views.xml',
     ],
 
-    'assets': {
-        'web.assets_tests': [
-            'techstore_maintenance/static/tests/tours/*.js',
-        ],
-    },
 
     'installable': True,
     'application': True,
