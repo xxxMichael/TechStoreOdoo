@@ -14,12 +14,14 @@
                             string="Desactivar"
                             type="object"
                             class="btn-danger"
+                            icon="fa-ban"
                             attrs="{'invisible': [('state', '=', 'inactive')]}"
                             confirm="¿Deseas desactivar este técnico? Sus órdenes activas deberán reasignarse."/>
                     <button name="action_activate"
                             string="Activar"
                             type="object"
                             class="btn-success"
+                            icon="fa-check"
                             attrs="{'invisible': [('state', '=', 'active')]}"/>
                     <field name="state" widget="statusbar"
                            statusbar_visible="active,inactive"/>
@@ -126,6 +128,9 @@
         <field name="model">ts.technician</field>
         <field name="arch" type="xml">
             <tree string="Técnicos"
+                  decoration-success="availability == 'available' and state == 'active'"
+                  decoration-warning="availability == 'busy'"
+                  decoration-info="availability == 'leave'"
                   decoration-muted="state == 'inactive'">
                 <field name="employee_number"/>
                 <field name="name"/>

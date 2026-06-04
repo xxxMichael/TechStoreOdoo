@@ -52,7 +52,7 @@
                         </group>
                     </group>
 
-                    <group string="Observaciones">
+                    <group string="Observaciones" col="1">
                         <field name="notes" placeholder="Observaciones generales del equipo..." nolabel="1"/>
                     </group>
 
@@ -89,6 +89,9 @@
         <field name="model">ts.equipment</field>
         <field name="arch" type="xml">
             <tree string="Equipos"
+                  decoration-success="current_state == 'operational'"
+                  decoration-danger="current_state == 'faulty'"
+                  decoration-warning="current_state == 'under_maintenance'"
                   decoration-muted="current_state == 'retired'">
                 <field name="name"/>
                 <field name="equipment_type"/>
