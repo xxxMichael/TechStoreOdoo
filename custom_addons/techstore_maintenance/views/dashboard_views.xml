@@ -13,199 +13,305 @@
                     <button name="action_refresh"
                             string="Actualizar Dashboard"
                             type="object"
-                            class="btn-primary"/>
+                            class="btn-primary"
+                            icon="fa-refresh"/>
                     <button name="action_export_report"
                             string="Exportar Reporte PDF"
                             type="object"
-                            class="btn-secondary"/>
+                            class="btn-secondary"
+                            icon="fa-file-pdf-o"/>
                 </header>
                 <sheet>
-                    <h2 class="text-center mb-3">Dashboard de Gestión — TechStore Maintenance</h2>
+                    <div class="mb-4" style="border-bottom: 2px solid #dee2e6; padding-bottom: 12px;">
+                        <h2 style="font-weight: 600; color: #2c3e50; margin: 0;">
+                            <i class="fa fa-dashboard mr-2"/> Dashboard de Gestión
+                        </h2>
+                        <span class="text-muted" style="font-size: 13px;">TechStore Maintenance</span>
+                    </div>
 
-                    <!-- ── Resumen general (4 tarjetas) ── -->
-                    <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 20px;">
-                        <div style="flex: 1 1 calc(25% - 12px); min-width: 140px;"
-                             class="border rounded p-3 text-center bg-light">
-                            <div class="font-weight-bold" style="font-size: 24px; color: #343a40;">
+                    <!-- ── Resumen general (4 tarjetas KPI) ── -->
+                    <h5 style="font-weight: 600; color: #495057; margin-bottom: 10px;">
+                        <i class="fa fa-bar-chart mr-1"/> Resumen General
+                    </h5>
+                    <div style="display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 24px;">
+                        <div style="flex: 1 1 calc(25% - 14px); min-width: 160px;
+                                    border-top: 4px solid #6c757d; border-radius: 6px;
+                                    box-shadow: 0 1px 4px rgba(0,0,0,0.08);"
+                             class="bg-white p-3 text-center">
+                            <i class="fa fa-list-alt mb-2" style="font-size: 30px; color: #6c757d; opacity: 0.5;"/>
+                            <div class="font-weight-bold" style="font-size: 28px; line-height: 1.1; color: #2c3e50;">
                                 <field name="total_orders" readonly="1"/>
                             </div>
-                            <div class="text-muted mt-1" style="font-size: 13px;">Total de Órdenes</div>
+                            <div class="text-muted mt-1" style="font-size: 12px;">Total de Órdenes</div>
                         </div>
-                        <div style="flex: 1 1 calc(25% - 12px); min-width: 140px;"
-                             class="border rounded p-3 text-center bg-light">
-                            <div class="font-weight-bold" style="font-size: 24px; color: #007bff;">
+                        <div style="flex: 1 1 calc(25% - 14px); min-width: 160px;
+                                    border-top: 4px solid #007bff; border-radius: 6px;
+                                    box-shadow: 0 1px 4px rgba(0,0,0,0.08);"
+                             class="bg-white p-3 text-center">
+                            <i class="fa fa-spinner mb-2" style="font-size: 30px; color: #007bff; opacity: 0.5;"/>
+                            <div class="font-weight-bold" style="font-size: 28px; line-height: 1.1; color: #007bff;">
                                 <field name="count_active" readonly="1"/>
                             </div>
-                            <div class="text-muted mt-1" style="font-size: 13px;">Órdenes Activas</div>
+                            <div class="text-muted mt-1" style="font-size: 12px;">Órdenes Activas</div>
                         </div>
-                        <div style="flex: 1 1 calc(25% - 12px); min-width: 140px;"
-                             class="border rounded p-3 text-center bg-light">
-                            <div class="font-weight-bold" style="font-size: 24px; color: #28a745;">
+                        <div style="flex: 1 1 calc(25% - 14px); min-width: 160px;
+                                    border-top: 4px solid #28a745; border-radius: 6px;
+                                    box-shadow: 0 1px 4px rgba(0,0,0,0.08);"
+                             class="bg-white p-3 text-center">
+                            <i class="fa fa-truck mb-2" style="font-size: 30px; color: #28a745; opacity: 0.5;"/>
+                            <div class="font-weight-bold" style="font-size: 28px; line-height: 1.1; color: #28a745;">
                                 <field name="count_delivered" readonly="1"/>
                             </div>
-                            <div class="text-muted mt-1" style="font-size: 13px;">Entregadas</div>
+                            <div class="text-muted mt-1" style="font-size: 12px;">Entregadas</div>
                         </div>
-                        <div style="flex: 1 1 calc(25% - 12px); min-width: 140px;"
-                             class="border rounded p-3 text-center bg-light">
-                            <div class="font-weight-bold" style="font-size: 24px; color: #6c757d;">
+                        <div style="flex: 1 1 calc(25% - 14px); min-width: 160px;
+                                    border-top: 4px solid #dc3545; border-radius: 6px;
+                                    box-shadow: 0 1px 4px rgba(0,0,0,0.08);"
+                             class="bg-white p-3 text-center">
+                            <i class="fa fa-times mb-2" style="font-size: 30px; color: #dc3545; opacity: 0.6;"/>
+                            <div class="font-weight-bold" style="font-size: 28px; line-height: 1.1; color: #dc3545;">
                                 <field name="count_closed" readonly="1"/>
                             </div>
-                            <div class="text-muted mt-1" style="font-size: 13px;">Cerradas</div>
+                            <div class="text-muted mt-1" style="font-size: 12px;">Cerradas</div>
                         </div>
                     </div>
 
                     <!-- ── Desglose por estado (6 tarjetas) ── -->
-                    <h4 class="mb-2">Estado de Órdenes</h4>
-                    <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
-                        <div style="flex: 1 1 calc(16.66% - 10px); min-width: 130px;"
-                             class="border rounded p-2 text-center bg-light">
-                            <div class="font-weight-bold" style="font-size: 20px; color: #007bff;">
+                    <h5 style="font-weight: 600; color: #495057; margin-bottom: 10px;">
+                        <i class="fa fa-tasks mr-1"/> Estado de Órdenes
+                    </h5>
+                    <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 24px;">
+                        <div style="flex: 1 1 calc(16.66% - 10px); min-width: 130px;
+                                    background: #eaf2fd; border-radius: 6px;
+                                    border-top: 3px solid #007bff; box-shadow: 0 1px 3px rgba(0,0,0,0.06);"
+                             class="p-2 text-center">
+                            <i class="fa fa-inbox mb-1" style="font-size: 22px; color: #007bff; opacity: 0.5;"/>
+                            <div class="font-weight-bold" style="font-size: 22px; color: #007bff;">
                                 <field name="count_received" readonly="1"/>
                             </div>
-                            <div class="text-muted" style="font-size: 12px;">Recibidas</div>
+                            <div style="font-size: 11px; color: #5a6a80;">Recibidas</div>
                         </div>
-                        <div style="flex: 1 1 calc(16.66% - 10px); min-width: 130px; background: #fff3cd;"
-                             class="border rounded p-2 text-center">
-                            <div class="font-weight-bold" style="font-size: 20px; color: #e0a800;">
+                        <div style="flex: 1 1 calc(16.66% - 10px); min-width: 130px;
+                                    background: #fff8e1; border-radius: 6px;
+                                    border-top: 3px solid #ffc107; box-shadow: 0 1px 3px rgba(0,0,0,0.06);"
+                             class="p-2 text-center">
+                            <i class="fa fa-search mb-1" style="font-size: 22px; color: #e0a800; opacity: 0.5;"/>
+                            <div class="font-weight-bold" style="font-size: 22px; color: #c79100;">
                                 <field name="count_diagnosis" readonly="1"/>
                             </div>
-                            <div class="text-muted" style="font-size: 12px;">En Diagnóstico</div>
+                            <div style="font-size: 11px; color: #5a6a80;">En Diagnóstico</div>
                         </div>
-                        <div style="flex: 1 1 calc(16.66% - 10px); min-width: 130px; background: #cce5ff;"
-                             class="border rounded p-2 text-center">
-                            <div class="font-weight-bold" style="font-size: 20px; color: #17a2b8;">
+                        <div style="flex: 1 1 calc(16.66% - 10px); min-width: 130px;
+                                    background: #e3f2fd; border-radius: 6px;
+                                    border-top: 3px solid #17a2b8; box-shadow: 0 1px 3px rgba(0,0,0,0.06);"
+                             class="p-2 text-center">
+                            <i class="fa fa-wrench mb-1" style="font-size: 22px; color: #17a2b8; opacity: 0.5;"/>
+                            <div class="font-weight-bold" style="font-size: 22px; color: #0f7a8a;">
                                 <field name="count_repair" readonly="1"/>
                             </div>
-                            <div class="text-muted" style="font-size: 12px;">En Reparación</div>
+                            <div style="font-size: 11px; color: #5a6a80;">En Reparación</div>
                         </div>
-                        <div style="flex: 1 1 calc(16.66% - 10px); min-width: 130px; background: #d4edda;"
-                             class="border rounded p-2 text-center">
-                            <div class="font-weight-bold" style="font-size: 20px; color: #28a745;">
+                        <div style="flex: 1 1 calc(16.66% - 10px); min-width: 130px;
+                                    background: #e8f5e9; border-radius: 6px;
+                                    border-top: 3px solid #28a745; box-shadow: 0 1px 3px rgba(0,0,0,0.06);"
+                             class="p-2 text-center">
+                            <i class="fa fa-flag-checkered mb-1" style="font-size: 22px; color: #28a745; opacity: 0.5;"/>
+                            <div class="font-weight-bold" style="font-size: 22px; color: #1e7e34;">
                                 <field name="count_ready" readonly="1"/>
                             </div>
-                            <div class="text-muted" style="font-size: 12px;">Listas Entrega</div>
+                            <div style="font-size: 11px; color: #5a6a80;">Listas Entrega</div>
                         </div>
-                        <div style="flex: 1 1 calc(16.66% - 10px); min-width: 130px;"
-                             class="border rounded p-2 text-center bg-light">
-                            <div class="font-weight-bold" style="font-size: 20px; color: #6c757d;">
+                        <div style="flex: 1 1 calc(16.66% - 10px); min-width: 130px;
+                                    background: #eceff1; border-radius: 6px;
+                                    border-top: 3px solid #607d8b; box-shadow: 0 1px 3px rgba(0,0,0,0.06);"
+                             class="p-2 text-center">
+                            <i class="fa fa-lock mb-1" style="font-size: 22px; color: #546e7a; opacity: 0.5;"/>
+                            <div class="font-weight-bold" style="font-size: 22px; color: #455a64;">
                                 <field name="count_closed" readonly="1"/>
                             </div>
-                            <div class="text-muted" style="font-size: 12px;">Cerradas</div>
+                            <div style="font-size: 11px; color: #5a6a80;">Cerradas</div>
                         </div>
-                        <div style="flex: 1 1 calc(16.66% - 10px); min-width: 130px; background: #f8d7da;"
-                             class="border rounded p-2 text-center">
-                            <div class="font-weight-bold" style="font-size: 20px; color: #dc3545;">
+                        <div style="flex: 1 1 calc(16.66% - 10px); min-width: 130px;
+                                    background: #fdecea; border-radius: 6px;
+                                    border-top: 3px solid #dc3545; box-shadow: 0 1px 3px rgba(0,0,0,0.06);"
+                             class="p-2 text-center">
+                            <i class="fa fa-exclamation-triangle mb-1" style="font-size: 22px; color: #dc3545; opacity: 0.5;"/>
+                            <div class="font-weight-bold" style="font-size: 22px; color: #bd2130;">
                                 <field name="count_overdue" readonly="1"/>
                             </div>
-                            <div class="text-muted" style="font-size: 12px;">Vencidas (SLA)</div>
+                            <div style="font-size: 11px; color: #5a6a80;">Vencidas (SLA)</div>
                         </div>
                     </div>
 
-                    <!-- ── Alertas rápidas (3 tarjetas con botones) ── -->
-                    <h4 class="mb-2">Alertas</h4>
-                    <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 20px;">
-                        <div style="flex: 1 1 calc(33.33% - 12px); min-width: 200px;"
-                             class="border rounded p-3 text-center">
-                            <div class="font-weight-bold text-danger" style="font-size: 28px;">
-                                <field name="count_critical" readonly="1"/>
+                    <!-- ── Alertas rápidas (3 tarjetas con acciones) ── -->
+                    <h5 style="font-weight: 600; color: #495057; margin-bottom: 10px;">
+                        <i class="fa fa-bell mr-1"/> Centro de Alertas
+                    </h5>
+                    <div style="display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 24px;">
+                        <div style="flex: 1 1 calc(33.33% - 14px); min-width: 200px;
+                                    border-radius: 6px; box-shadow: 0 2px 6px rgba(220,53,69,0.15);
+                                    border: 1px solid #f5c6cb; overflow: hidden;"
+                             class="bg-white">
+                            <div style="background: #dc3545; padding: 8px 14px; color: white; font-size: 13px; font-weight: 600;">
+                                <i class="fa fa-exclamation-circle mr-1"/> Críticas Activas
                             </div>
-                            <div class="mb-2">Órdenes Críticas Activas</div>
-                            <button name="action_view_critical" type="object"
-                                    class="btn btn-sm btn-danger"
-                                    attrs="{'invisible': [('count_critical', '=', 0)]}">
-                                Ver críticas
-                            </button>
+                            <div class="p-3 text-center">
+                                <div class="font-weight-bold text-danger" style="font-size: 36px; line-height: 1;">
+                                    <field name="count_critical" readonly="1"/>
+                                </div>
+                                <div class="text-muted mt-1 mb-2" style="font-size: 12px;">Requieren atención inmediata</div>
+                                <button name="action_view_critical" type="object"
+                                        class="btn btn-danger btn-sm btn-block"
+                                        attrs="{'invisible': [('count_critical', '=', 0)]}">
+                                    <i class="fa fa-arrow-right mr-1"/>Ver críticas
+                                </button>
+                                <div class="text-success mt-1" style="font-size: 13px;"
+                                     attrs="{'invisible': [('count_critical', '!=', 0)]}">
+                                    <i class="fa fa-check-circle"/> Todo bajo control
+                                </div>
+                            </div>
                         </div>
-                        <div style="flex: 1 1 calc(33.33% - 12px); min-width: 200px;"
-                             class="border rounded p-3 text-center">
-                            <div class="font-weight-bold text-warning" style="font-size: 28px;">
-                                <field name="count_unassigned" readonly="1"/>
+                        <div style="flex: 1 1 calc(33.33% - 14px); min-width: 200px;
+                                    border-radius: 6px; box-shadow: 0 2px 6px rgba(255,193,7,0.15);
+                                    border: 1px solid #ffeeba; overflow: hidden;"
+                             class="bg-white">
+                            <div style="background: #ffc107; padding: 8px 14px; color: #5a4a00; font-size: 13px; font-weight: 600;">
+                                <i class="fa fa-user-times mr-1"/> Sin Asignar
                             </div>
-                            <div class="mb-2">Sin Técnico Asignado</div>
-                            <button name="action_view_unassigned" type="object"
-                                    class="btn btn-sm btn-warning"
-                                    attrs="{'invisible': [('count_unassigned', '=', 0)]}">
-                                Asignar técnico
-                            </button>
+                            <div class="p-3 text-center">
+                                <div class="font-weight-bold text-warning" style="font-size: 36px; line-height: 1;
+                                            color: #b88700;">
+                                    <field name="count_unassigned" readonly="1"/>
+                                </div>
+                                <div class="text-muted mt-1 mb-2" style="font-size: 12px;">Órdenes sin técnico</div>
+                                <button name="action_view_unassigned" type="object"
+                                        class="btn btn-warning btn-sm btn-block"
+                                        attrs="{'invisible': [('count_unassigned', '=', 0)]}">
+                                    <i class="fa fa-user-plus mr-1"/>Asignar técnico
+                                </button>
+                                <div class="text-success mt-1" style="font-size: 13px;"
+                                     attrs="{'invisible': [('count_unassigned', '!=', 0)]}">
+                                    <i class="fa fa-check-circle"/> Todas asignadas
+                                </div>
+                            </div>
                         </div>
-                        <div style="flex: 1 1 calc(33.33% - 12px); min-width: 200px;"
-                             class="border rounded p-3 text-center">
-                            <div class="font-weight-bold text-danger" style="font-size: 28px;">
-                                <field name="count_overdue" readonly="1"/>
+                        <div style="flex: 1 1 calc(33.33% - 14px); min-width: 200px;
+                                    border-radius: 6px; box-shadow: 0 2px 6px rgba(220,53,69,0.15);
+                                    border: 1px solid #f5c6cb; overflow: hidden;"
+                             class="bg-white">
+                            <div style="background: #e4606d; padding: 8px 14px; color: white; font-size: 13px; font-weight: 600;">
+                                <i class="fa fa-clock-o mr-1"/> Fuera de SLA
                             </div>
-                            <div class="mb-2">Órdenes Vencidas</div>
-                            <button name="action_view_overdue" type="object"
-                                    class="btn btn-sm btn-danger"
-                                    attrs="{'invisible': [('count_overdue', '=', 0)]}">
-                                Revisar vencidas
-                            </button>
+                            <div class="p-3 text-center">
+                                <div class="font-weight-bold text-danger" style="font-size: 36px; line-height: 1;">
+                                    <field name="count_overdue" readonly="1"/>
+                                </div>
+                                <div class="text-muted mt-1 mb-2" style="font-size: 12px;">Órdenes vencidas</div>
+                                <button name="action_view_overdue" type="object"
+                                        class="btn btn-danger btn-sm btn-block"
+                                        attrs="{'invisible': [('count_overdue', '=', 0)]}">
+                                    <i class="fa fa-search mr-1"/>Revisar vencidas
+                                </button>
+                                <div class="text-success mt-1" style="font-size: 13px;"
+                                     attrs="{'invisible': [('count_overdue', '!=', 0)]}">
+                                    <i class="fa fa-check-circle"/> Sin vencimientos
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- ── Métricas de rendimiento (2 tarjetas) ── -->
-                    <h4 class="mb-2">Métricas de Rendimiento</h4>
-                    <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 20px;">
-                        <div style="flex: 1 1 calc(50% - 12px); min-width: 200px;"
-                             class="border rounded p-3 text-center bg-light">
-                            <div class="font-weight-bold text-info" style="font-size: 28px;">
-                                <field name="avg_resolution_days" readonly="1"/>
+                    <!-- ── Métricas de rendimiento ── -->
+                    <h5 style="font-weight: 600; color: #495057; margin-bottom: 10px;">
+                        <i class="fa fa-line-chart mr-1"/> Métricas de Rendimiento
+                    </h5>
+                    <div style="display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 24px;">
+                        <div style="flex: 1 1 calc(50% - 14px); min-width: 220px;
+                                    border-radius: 6px; box-shadow: 0 2px 6px rgba(23,162,184,0.12);
+                                    border: 1px solid #bee5eb; overflow: hidden;"
+                             class="bg-white">
+                            <div style="background: #17a2b8; padding: 8px 14px; color: white; font-size: 13px; font-weight: 600;">
+                                <i class="fa fa-clock-o mr-1"/> Tiempo Promedio de Resolución
                             </div>
-                            <div>Días Promedio de Resolución</div>
+                            <div class="p-3 text-center">
+                                <i class="fa fa-hourglass-half mb-2" style="font-size: 28px; color: #17a2b8; opacity: 0.3;"/>
+                                <div class="font-weight-bold text-info" style="font-size: 36px; line-height: 1;">
+                                    <field name="avg_resolution_days" readonly="1"/>
+                                    <span style="font-size: 16px;">días</span>
+                                </div>
+                                <div class="text-muted mt-1" style="font-size: 12px;">Promedio desde recepción hasta cierre</div>
+                            </div>
                         </div>
-                        <div style="flex: 1 1 calc(50% - 12px); min-width: 200px;"
-                             class="border rounded p-3 text-center bg-light">
-                            <div class="font-weight-bold text-secondary" style="font-size: 28px;">
-                                <field name="recurrence_rate" readonly="1"/>%
+                        <div style="flex: 1 1 calc(50% - 14px); min-width: 220px;
+                                    border-radius: 6px; box-shadow: 0 2px 6px rgba(108,117,125,0.12);
+                                    border: 1px solid #ced4da; overflow: hidden;"
+                             class="bg-white">
+                            <div style="background: #6c757d; padding: 8px 14px; color: white; font-size: 13px; font-weight: 600;">
+                                <i class="fa fa-undo mr-1"/> Tasa de Reincidencia
                             </div>
-                            <div>Tasa de Reincidencia</div>
-                            <small class="text-muted">Objetivo: &lt; 10%</small>
+                            <div class="p-3 text-center">
+                                <i class="fa fa-repeat mb-2" style="font-size: 28px; color: #6c757d; opacity: 0.3;"/>
+                                <div class="font-weight-bold" style="font-size: 36px; line-height: 1; color: #2c3e50;">
+                                    <field name="recurrence_rate" readonly="1"/>%
+                                </div>
+                                <div class="text-muted mt-1" style="font-size: 12px;">
+                                    Objetivo: &lt; 10%  ·
+                                    <span style="color: #28a745;" attrs="{'invisible': [('recurrence_rate', '&gt;', 10)]}">
+                                        <i class="fa fa-check-circle"/> Cumplido
+                                    </span>
+                                    <span style="color: #dc3545;" attrs="{'invisible': [('recurrence_rate', '&lt;=', 10)]}">
+                                        <i class="fa fa-times-circle"/> Fuera de objetivo
+                                    </span>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <!-- ── ISO/IEC 25010 Métricas (RF-20) ── -->
-                    <h4 class="mb-2">Indicadores ISO/IEC 25010</h4>
+                    <h5 style="font-weight: 600; color: #495057; margin-bottom: 10px;">
+                        <i class="fa fa-certificate mr-1"/> Indicadores ISO/IEC 25010
+                    </h5>
                     <field name="iso_correctness_semaphore" invisible="1"/>
                     <field name="iso_efficiency_semaphore" invisible="1"/>
-                    <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 20px;">
-                        <div style="flex: 1 1 calc(33.33% - 12px); min-width: 200px;"
-                             class="border rounded p-3">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <strong>Funcionalidad Correcta</strong>
-                                <span>
-                                    <span style="font-size: 20px;" attrs="{'invisible': [('iso_correctness_semaphore', '!=', 'green')]}">🟢</span>
-                                    <span style="font-size: 20px;" attrs="{'invisible': [('iso_correctness_semaphore', '!=', 'yellow')]}">🟡</span>
-                                    <span style="font-size: 20px;" attrs="{'invisible': [('iso_correctness_semaphore', '!=', 'red')]}">🔴</span>
+                    <div style="display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 20px;">
+                        <div style="flex: 1 1 calc(50% - 14px); min-width: 200px;
+                                    border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+                                    border: 1px solid #dee2e6; overflow: hidden;"
+                             class="bg-white">
+                            <div style="background: #764ba2; padding: 8px 14px; color: white; font-size: 13px; font-weight: 600;">
+                                <i class="fa fa-shield mr-1"/> Funcionalidad Correcta
+                                <span class="ml-1">
+                                    <span attrs="{'invisible': [('iso_correctness_semaphore', '!=', 'green')]}">🟢</span>
+                                    <span attrs="{'invisible': [('iso_correctness_semaphore', '!=', 'yellow')]}">🟡</span>
+                                    <span attrs="{'invisible': [('iso_correctness_semaphore', '!=', 'red')]}">🔴</span>
                                 </span>
                             </div>
-                            <div class="text-center font-weight-bold" style="font-size: 24px;">
-                                <field name="iso_correctness" readonly="1"/>%
+                            <div class="p-3 text-center">
+                                <i class="fa fa-bullseye mb-2" style="font-size: 28px; color: #764ba2; opacity: 0.25;"/>
+                                <div class="font-weight-bold" style="font-size: 32px; color: #495057;">
+                                    <field name="iso_correctness" readonly="1"/>%
+                                </div>
+                                <small class="text-muted">Órdenes cerradas sin reincidencia</small>
                             </div>
-                            <small class="text-muted">Órdenes sin reincidencia / Total cerradas</small>
                         </div>
-                        <div style="flex: 1 1 calc(33.33% - 12px); min-width: 200px;"
-                             class="border rounded p-3">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <strong>Eficiencia de Rendimiento</strong>
-                                <span>
-                                    <span style="font-size: 20px;" attrs="{'invisible': [('iso_efficiency_semaphore', '!=', 'green')]}">🟢</span>
-                                    <span style="font-size: 20px;" attrs="{'invisible': [('iso_efficiency_semaphore', '!=', 'yellow')]}">🟡</span>
-                                    <span style="font-size: 20px;" attrs="{'invisible': [('iso_efficiency_semaphore', '!=', 'red')]}">🔴</span>
+                        <div style="flex: 1 1 calc(50% - 14px); min-width: 200px;
+                                    border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+                                    border: 1px solid #dee2e6; overflow: hidden;"
+                             class="bg-white">
+                            <div style="background: #e83e8c; padding: 8px 14px; color: white; font-size: 13px; font-weight: 600;">
+                                <i class="fa fa-bolt mr-1"/> Eficiencia de Rendimiento
+                                <span class="ml-1">
+                                    <span attrs="{'invisible': [('iso_efficiency_semaphore', '!=', 'green')]}">🟢</span>
+                                    <span attrs="{'invisible': [('iso_efficiency_semaphore', '!=', 'yellow')]}">🟡</span>
+                                    <span attrs="{'invisible': [('iso_efficiency_semaphore', '!=', 'red')]}">🔴</span>
                                 </span>
                             </div>
-                            <div class="text-center font-weight-bold" style="font-size: 24px;">
-                                <field name="iso_efficiency" readonly="1"/>%
+                            <div class="p-3 text-center">
+                                <i class="fa fa-flash mb-2" style="font-size: 28px; color: #e83e8c; opacity: 0.25;"/>
+                                <div class="font-weight-bold" style="font-size: 32px; color: #495057;">
+                                    <field name="iso_efficiency" readonly="1"/>%
+                                </div>
+                                <small class="text-muted">Órdenes resueltas dentro del SLA</small>
                             </div>
-                            <small class="text-muted">Órdenes resueltas dentro del SLA</small>
-                        </div>
-                        <div style="flex: 1 1 calc(33.33% - 12px); min-width: 200px;"
-                             class="border rounded p-3">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <strong>Disponibilidad del Servicio</strong>
-                            </div>
-                            <div class="text-center font-weight-bold" style="font-size: 20px;">
-                                <field name="iso_availability" readonly="1"/>
-                            </div>
-                            <small class="text-muted">ISO 25010 — Reliability</small>
                         </div>
                     </div>
 

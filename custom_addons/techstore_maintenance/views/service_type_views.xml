@@ -22,9 +22,9 @@
                             <field name="active" widget="boolean_toggle"/>
                             <field name="order_count" readonly="1"/>
                         </group>
-                        <group string="Descripción">
-                            <field name="description" placeholder="Descripción del servicio..." nolabel="1"/>
-                        </group>
+                    </group>
+                    <group string="Descripción" col="1">
+                        <field name="description" placeholder="Descripción del servicio..." nolabel="1"/>
                     </group>
 
                     <notebook>

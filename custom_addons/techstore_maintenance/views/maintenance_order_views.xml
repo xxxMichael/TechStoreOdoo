@@ -17,26 +17,31 @@
                             string="Iniciar Diagnóstico"
                             type="object"
                             class="btn-primary"
+                            icon="fa-search"
                             attrs="{'invisible': [('state', '!=', 'received')]}"/>
                     <button name="action_start_repair"
                             string="Iniciar Reparación"
                             type="object"
                             class="btn-primary"
+                            icon="fa-wrench"
                             attrs="{'invisible': [('state', '!=', 'diagnosis')]}"/>
                     <button name="action_mark_ready"
                             string="Listo para Entrega"
                             type="object"
                             class="btn-primary"
+                            icon="fa-check"
                             attrs="{'invisible': [('state', '!=', 'repair')]}"/>
                     <button name="action_mark_delivered"
                             string="Marcar Entregado"
                             type="object"
                             class="btn-primary"
+                            icon="fa-truck"
                             attrs="{'invisible': [('state', '!=', 'ready')]}"/>
                     <button name="action_close"
                             string="Cerrar Orden"
                             type="object"
                             class="btn-secondary"
+                            icon="fa-lock"
                             attrs="{'invisible': [('state', '!=', 'delivered')]}"/>
                     <field name="state" widget="statusbar"
                            statusbar_visible="received,diagnosis,repair,ready,delivered,closed"/>
@@ -162,8 +167,10 @@
         <field name="model">ts.maintenance.order</field>
         <field name="arch" type="xml">
             <tree string="Órdenes de Mantenimiento"
-                  decoration-danger="priority == '3'"
-                  decoration-warning="priority == '2'"
+                  decoration-danger="priority == '3' and state != 'closed'"
+                  decoration-warning="priority == '2' and state != 'closed'"
+                  decoration-info="state == 'received'"
+                  decoration-success="state == 'ready'"
                   decoration-muted="state == 'closed'">
                 <field name="folio"/>
                 <field name="reception_date"/>
@@ -208,29 +215,53 @@
                 <field name="priority_kanban"/>
                 <templates>
                     <t t-name="kanban-box">
-                        <div t-attf-class="oe_kanban_card oe_kanban_global_click
-                            #{record.priority.raw_value == '3' ? 'border-danger' : ''}
-                            #{record.priority.raw_value == '2' ? 'border-warning' : ''}">
+                        <t t-set="state_class"
+                           t-value="record.state.raw_value == 'received' and 'border-info' or
+                                    record.state.raw_value == 'diagnosis' and 'border-warning' or
+                                    record.state.raw_value == 'repair' and 'border-info' or
+                                    record.state.raw_value == 'ready' and 'border-success' or
+                                    record.state.raw_value == 'delivered' and 'border-primary' or
+                                    record.state.raw_value == 'closed' and 'border-secondary' or ''"/>
+                        <t t-set="priority_class"
+                           t-value="record.priority.raw_value == '3' and 'border-danger' or
+                                    record.priority.raw_value == '2' and 'border-warning' or ''"/>
+                        <div t-attf-class="oe_kanban_card oe_kanban_global_click #{priority_class}" style="border-left: 5px solid inherit;">
                             <div class="oe_kanban_content p-2">
-                                <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <strong class="text-truncate">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                    <strong class="text-truncate" style="font-size: 14px;">
                                         <field name="folio"/>
                                     </strong>
+                                    <span t-attf-class="badge badge-pill
+                                        #{record.state.raw_value == 'received' and 'badge-info' or ''}
+                                        #{record.state.raw_value == 'diagnosis' and 'badge-warning' or ''}
+                                        #{record.state.raw_value == 'repair' and 'badge-info' or ''}
+                                        #{record.state.raw_value == 'ready' and 'badge-success' or ''}
+                                        #{record.state.raw_value == 'delivered' and 'badge-primary' or ''}
+                                        #{record.state.raw_value == 'closed' and 'badge-secondary' or ''}"
+                                        style="font-size: 10px;">
+                                        <t t-esc="record.state.value"/>
+                                    </span>
+                                </div>
+                                <div style="display: flex; align-items: center; margin-bottom: 4px;
+                                            background: #f8f9fa; border-radius: 4px; padding: 4px 6px;">
+                                    <i class="fa fa-star mr-2" style="color: #ffc107; font-size: 12px;"/>
                                     <field name="priority" widget="priority"/>
                                 </div>
-                                <div class="text-muted small mb-1">
-                                    <i class="fa fa-user"/> <field name="client_id"/>
+                                <div style="margin-bottom: 3px; font-size: 12px; color: #495057;">
+                                    <i class="fa fa-user mr-1" style="width: 14px; text-align: center;"/> <field name="client_id"/>
                                 </div>
-                                <div class="text-muted small mb-1">
-                                    <i class="fa fa-laptop"/> <field name="equipment_id"/>
+                                <div style="margin-bottom: 3px; font-size: 12px; color: #495057;">
+                                    <i class="fa fa-laptop mr-1" style="width: 14px; text-align: center;"/> <field name="equipment_id"/>
                                 </div>
-                                <div class="text-muted small">
-                                    <i class="fa fa-wrench"/> <field name="service_type_id"/>
+                                <div style="font-size: 12px; color: #495057;">
+                                    <i class="fa fa-wrench mr-1" style="width: 14px; text-align: center;"/> <field name="service_type_id"/>
                                 </div>
                             </div>
-                            <div class="oe_kanban_footer d-flex justify-content-between align-items-center px-2 py-1">
-                                <span class="text-muted small">
-                                    <i class="fa fa-clock-o"/>
+                            <div style="background: #f8f9fa; display: flex; justify-content: space-between;
+                                        align-items: center; padding: 6px 10px; border-top: 1px solid #eee;
+                                        font-size: 11px; color: #6c757d;">
+                                <span>
+                                    <i class="fa fa-clock-o mr-1"/>
                                     <field name="days_open"/> días
                                 </span>
                                 <field name="technician_id" widget="many2one_avatar"
