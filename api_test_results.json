@@ -1,0 +1,243 @@
+{
+  "run_id": "20260602_191006",
+  "base_url": "http://localhost:8069",
+  "db": "techstore_db",
+  "executed_at": "2026-06-02T19:10:07.951535",
+  "summary": {
+    "total": 23,
+    "passed": 23,
+    "failed": 0
+  },
+  "results": [
+    {
+      "case_id": "PF-01",
+      "description": "Consultar dashboard de metricas",
+      "request": "GET /api/techstore/dashboard",
+      "expected": "HTTP 200 con campo total_orders",
+      "actual": "HTTP 200 | {\"name\": \"Dashboard TechStore\", \"total_orders\": 10, \"count_received\": 5, \"count_diagnosis\": 1, \"count_repair\": 1, \"count_ready\": 1, \"count_delivered\": 1, \"count_closed\": 1, \"count_active\": 9, \"count_unassigned\": 4, \"count_critical\": 1, \"count_overdue\": 1, \"avg_resolution_days\": 7.0, \"recurrence_rate\": 0.0, \"iso_correctness\": 100.0, \"iso_correctness_semaphore\": \"green\", \"iso_efficiency\": 100.0, \"is",
+      "passed": true,
+      "elapsed": 0.009484700014581904,
+      "category": "Funcional"
+    },
+    {
+      "case_id": "PF-02",
+      "description": "Listar ordenes de mantenimiento paginadas",
+      "request": "GET /api/techstore/maintenance-orders?limit=10",
+      "expected": "HTTP 200 con campos count e items",
+      "actual": "HTTP 200 | {\"count\": 10, \"items\": [{\"id\": 7, \"folio\": \"TS-2026-0007\", \"client_id\": {\"id\": 67, \"name\": \"Juan Perez\"}, \"equipment_id\": {\"id\": 1, \"name\": \"[SN-HP-001] HP ProBook — Juan Perez\"}, \"service_type_id\": {\"id\": 12, \"name\": \"Limpieza\"}, \"technician_id\": {\"id\": 2, \"name\": \"Ana Torres\"}, \"state\": \"diagnosis\", \"priority\": \"3\", \"priority_kanban\": true, \"reception_date\": \"2026-05-24\", \"close_date\": false, \"d",
+      "passed": true,
+      "elapsed": 0.018760499980999157,
+      "category": "Funcional"
+    },
+    {
+      "case_id": "PF-03",
+      "description": "Crear orden de mantenimiento",
+      "request": "POST /api/techstore/maintenance-orders",
+      "expected": "HTTP 201 y state=received",
+      "actual": "HTTP 201 | {\"id\": 629, \"folio\": \"TS-2026-0135\", \"client_id\": {\"id\": 386, \"name\": \"Cliente Prueba API 20260602_191006\"}, \"equipment_id\": {\"id\": 716, \"name\": \"[SN-EXT-20260602_191006] Lenovo ThinkPad API — Cliente Prueba API 20260602_191006\"}, \"service_type_id\": {\"id\": 289, \"name\": \"Servicio API 20260602_191006\"}, \"technician_id\": false, \"state\": \"received\", \"priority\": \"2\", \"priority_kanban\": true, \"reception",
+      "passed": true,
+      "elapsed": 0.041510800016112626,
+      "category": "Funcional"
+    },
+    {
+      "case_id": "PF-04",
+      "description": "Asignar tecnico a la orden",
+      "request": "POST .../actions/assign-technician",
+      "expected": "HTTP 200 y technician_id igual al enviado",
+      "actual": "HTTP 200 | {\"id\": 629, \"folio\": \"TS-2026-0135\", \"client_id\": {\"id\": 386, \"name\": \"Cliente Prueba API 20260602_191006\"}, \"equipment_id\": {\"id\": 716, \"name\": \"[SN-EXT-20260602_191006] Lenovo ThinkPad API — Cliente Prueba API 20260602_191006\"}, \"service_type_id\": {\"id\": 289, \"name\": \"Servicio API 20260602_191006\"}, \"technician_id\": {\"id\": 245, \"name\": \"Tecnico API 20260602_191006\"}, \"state\": \"received\", \"priori",
+      "passed": true,
+      "elapsed": 0.03390529999160208,
+      "category": "Funcional"
+    },
+    {
+      "case_id": "PF-05",
+      "description": "Iniciar diagnostico de la orden",
+      "request": "POST .../actions/start-diagnosis",
+      "expected": "HTTP 200 y state=diagnosis",
+      "actual": "HTTP 200 | {\"id\": 629, \"folio\": \"TS-2026-0135\", \"client_id\": {\"id\": 386, \"name\": \"Cliente Prueba API 20260602_191006\"}, \"equipment_id\": {\"id\": 716, \"name\": \"[SN-EXT-20260602_191006] Lenovo ThinkPad API — Cliente Prueba API 20260602_191006\"}, \"service_type_id\": {\"id\": 289, \"name\": \"Servicio API 20260602_191006\"}, \"technician_id\": {\"id\": 245, \"name\": \"Tecnico API 20260602_191006\"}, \"state\": \"diagnosis\", \"prior",
+      "passed": true,
+      "elapsed": 0.032711800013203174,
+      "category": "Funcional"
+    },
+    {
+      "case_id": "PF-06",
+      "description": "Bloquear avance a reparacion sin texto de diagnostico",
+      "request": "POST .../actions/start-repair (sin diagnosis)",
+      "expected": "HTTP 400",
+      "actual": "HTTP 400 | {\"error\": \"Debes registrar el diagnóstico antes de pasar a reparación.\"}",
+      "passed": true,
+      "elapsed": 0.02693429999635555,
+      "category": "Funcional"
+    },
+    {
+      "case_id": "PF-07",
+      "description": "Actualizar campo de diagnostico",
+      "request": "PATCH /api/techstore/maintenance-orders/{id}",
+      "expected": "HTTP 200 y campo diagnosis persistido",
+      "actual": "HTTP 200 | {\"id\": 629, \"folio\": \"TS-2026-0135\", \"client_id\": {\"id\": 386, \"name\": \"Cliente Prueba API 20260602_191006\"}, \"equipment_id\": {\"id\": 716, \"name\": \"[SN-EXT-20260602_191006] Lenovo ThinkPad API — Cliente Prueba API 20260602_191006\"}, \"service_type_id\": {\"id\": 289, \"name\": \"Servicio API 20260602_191006\"}, \"technician_id\": {\"id\": 245, \"name\": \"Tecnico API 20260602_191006\"}, \"state\": \"diagnosis\", \"prior",
+      "passed": true,
+      "elapsed": 0.03806690001511015,
+      "category": "Funcional"
+    },
+    {
+      "case_id": "PF-08",
+      "description": "Iniciar reparacion de la orden",
+      "request": "POST .../actions/start-repair",
+      "expected": "HTTP 200 y state=repair",
+      "actual": "HTTP 200 | {\"id\": 629, \"folio\": \"TS-2026-0135\", \"client_id\": {\"id\": 386, \"name\": \"Cliente Prueba API 20260602_191006\"}, \"equipment_id\": {\"id\": 716, \"name\": \"[SN-EXT-20260602_191006] Lenovo ThinkPad API — Cliente Prueba API 20260602_191006\"}, \"service_type_id\": {\"id\": 289, \"name\": \"Servicio API 20260602_191006\"}, \"technician_id\": {\"id\": 245, \"name\": \"Tecnico API 20260602_191006\"}, \"state\": \"repair\", \"priority",
+      "passed": true,
+      "elapsed": 0.017243299982510507,
+      "category": "Funcional"
+    },
+    {
+      "case_id": "PF-09",
+      "description": "Bloquear 'listo' sin texto de resolucion",
+      "request": "POST .../actions/mark-ready (sin resolution)",
+      "expected": "HTTP 400",
+      "actual": "HTTP 400 | {\"error\": \"Debes registrar la solución aplicada antes de marcar como listo.\"}",
+      "passed": true,
+      "elapsed": 0.026901799981715158,
+      "category": "Funcional"
+    },
+    {
+      "case_id": "PF-10",
+      "description": "Actualizar campo de resolucion y repuestos",
+      "request": "PATCH /api/techstore/maintenance-orders/{id}",
+      "expected": "HTTP 200 y campo resolution persistido",
+      "actual": "HTTP 200 | {\"id\": 629, \"folio\": \"TS-2026-0135\", \"client_id\": {\"id\": 386, \"name\": \"Cliente Prueba API 20260602_191006\"}, \"equipment_id\": {\"id\": 716, \"name\": \"[SN-EXT-20260602_191006] Lenovo ThinkPad API — Cliente Prueba API 20260602_191006\"}, \"service_type_id\": {\"id\": 289, \"name\": \"Servicio API 20260602_191006\"}, \"technician_id\": {\"id\": 245, \"name\": \"Tecnico API 20260602_191006\"}, \"state\": \"repair\", \"priority",
+      "passed": true,
+      "elapsed": 0.016833200003020465,
+      "category": "Funcional"
+    },
+    {
+      "case_id": "PF-11",
+      "description": "Marcar orden lista para entrega",
+      "request": "POST .../actions/mark-ready",
+      "expected": "HTTP 200 y state=ready",
+      "actual": "HTTP 200 | {\"id\": 629, \"folio\": \"TS-2026-0135\", \"client_id\": {\"id\": 386, \"name\": \"Cliente Prueba API 20260602_191006\"}, \"equipment_id\": {\"id\": 716, \"name\": \"[SN-EXT-20260602_191006] Lenovo ThinkPad API — Cliente Prueba API 20260602_191006\"}, \"service_type_id\": {\"id\": 289, \"name\": \"Servicio API 20260602_191006\"}, \"technician_id\": {\"id\": 245, \"name\": \"Tecnico API 20260602_191006\"}, \"state\": \"ready\", \"priority\"",
+      "passed": true,
+      "elapsed": 0.03363359998911619,
+      "category": "Funcional"
+    },
+    {
+      "case_id": "PF-12",
+      "description": "Marcar orden como entregada",
+      "request": "POST .../actions/mark-delivered",
+      "expected": "HTTP 200 y state=delivered",
+      "actual": "HTTP 200 | {\"id\": 629, \"folio\": \"TS-2026-0135\", \"client_id\": {\"id\": 386, \"name\": \"Cliente Prueba API 20260602_191006\"}, \"equipment_id\": {\"id\": 716, \"name\": \"[SN-EXT-20260602_191006] Lenovo ThinkPad API — Cliente Prueba API 20260602_191006\"}, \"service_type_id\": {\"id\": 289, \"name\": \"Servicio API 20260602_191006\"}, \"technician_id\": {\"id\": 245, \"name\": \"Tecnico API 20260602_191006\"}, \"state\": \"delivered\", \"prior",
+      "passed": true,
+      "elapsed": 0.01928619999671355,
+      "category": "Funcional"
+    },
+    {
+      "case_id": "PF-13",
+      "description": "Cerrar la orden finalizada",
+      "request": "POST .../actions/close",
+      "expected": "HTTP 200 y state=closed",
+      "actual": "HTTP 200 | {\"id\": 629, \"folio\": \"TS-2026-0135\", \"client_id\": {\"id\": 386, \"name\": \"Cliente Prueba API 20260602_191006\"}, \"equipment_id\": {\"id\": 716, \"name\": \"[SN-EXT-20260602_191006] Lenovo ThinkPad API — Cliente Prueba API 20260602_191006\"}, \"service_type_id\": {\"id\": 289, \"name\": \"Servicio API 20260602_191006\"}, \"technician_id\": {\"id\": 245, \"name\": \"Tecnico API 20260602_191006\"}, \"state\": \"closed\", \"priority",
+      "passed": true,
+      "elapsed": 0.025306399998953566,
+      "category": "Funcional"
+    },
+    {
+      "case_id": "PF-14",
+      "description": "Consultar bitacora de auditoria de la orden",
+      "request": "GET .../audit-logs",
+      "expected": "HTTP 200 con minimo 5 entradas de auditoria",
+      "actual": "HTTP 200 | {\"order_id\": 629, \"folio\": \"TS-2026-0135\", \"items\": [{\"id\": 1168, \"order_id\": {\"id\": 629, \"name\": \"TS-2026-0135\"}, \"user_id\": {\"id\": 2, \"name\": \"Mitchell Admin\"}, \"event_type\": \"Orden cerrada\", \"description\": \"Fecha de cierre: 2026-06-03\", \"event_date\": \"2026-06-03 00:10:07\", \"create_date\": \"2026-06-03 00:10:07.250516\"}, {\"id\": 1167, \"order_id\": {\"id\": 629, \"name\": \"TS-2026-0135\"}, \"user_id\": {\"id",
+      "passed": true,
+      "elapsed": 0.024977599998237565,
+      "category": "Funcional"
+    },
+    {
+      "case_id": "PF-15",
+      "description": "Bloquear accion sobre orden cerrada",
+      "request": "POST .../actions/start-diagnosis (orden cerrada)",
+      "expected": "HTTP 400",
+      "actual": "HTTP 400 | {\"error\": \"La orden TS-2026-0135 está cerrada y no puede modificarse.\"}",
+      "passed": true,
+      "elapsed": 0.02163579998887144,
+      "category": "Funcional"
+    },
+    {
+      "case_id": "PS-01",
+      "description": "Verificar que el acceso anonimo sea rechazado",
+      "request": "GET /api/techstore/dashboard sin sesion",
+      "expected": "Redireccion (303) o rechazo (401) sin datos JSON",
+      "actual": "HTTP 303 | \"<!DOCTYPE HTML PUBLIC \\\"-//W3C//DTD HTML 3.2 Final//EN\\\">\\n<title>Redirecting...</title>\\n<h1>Redirecting...</h1>\\n<p>You should be redirected automatically to target URL: <a href=\\\"/web/login?redirect=%2Fapi%2Ftechstore%2Fdashboard%3F\\\">/web/login?redirect=%2Fapi%2Ftechstore%2Fdashboard%3F</a>.  If not cl\"",
+      "passed": true,
+      "elapsed": 0.014795900002354756,
+      "category": "Seguridad"
+    },
+    {
+      "case_id": "PS-02",
+      "description": "Recurso no registrado retorna HTTP 404",
+      "request": "GET /api/techstore/recurso-inexistente",
+      "expected": "HTTP 404",
+      "actual": "HTTP 404 | {\"error\": \"Recurso no encontrado.\"}",
+      "passed": true,
+      "elapsed": 0.016860400006407872,
+      "category": "Seguridad"
+    },
+    {
+      "case_id": "PS-03",
+      "description": "Bloquear creacion directa del log de auditoria",
+      "request": "POST /api/techstore/audit-logs",
+      "expected": "HTTP 400 o 403",
+      "actual": "HTTP 400 | {\"error\": \"El recurso no permite operaciones de create.\"}",
+      "passed": true,
+      "elapsed": 0.016279200004646555,
+      "category": "Seguridad"
+    },
+    {
+      "case_id": "PS-04",
+      "description": "JSON malformado retorna HTTP 400",
+      "request": "POST /api/techstore/clients con cuerpo malformado",
+      "expected": "HTTP 400",
+      "actual": "HTTP 400 | {\"error\": \"El cuerpo de la solicitud debe ser JSON valido.\"}",
+      "passed": true,
+      "elapsed": 0.0166458000021521,
+      "category": "Seguridad"
+    },
+    {
+      "case_id": "PS-05",
+      "description": "Accion no definida retorna HTTP 404",
+      "request": "POST .../actions/accion-falsa",
+      "expected": "HTTP 404",
+      "actual": "HTTP 404 | {\"error\": \"Accion no encontrada.\"}",
+      "passed": true,
+      "elapsed": 0.017383099999278784,
+      "category": "Seguridad"
+    },
+    {
+      "case_id": "PS-06",
+      "description": "Respuestas incluyen Content-Type application/json",
+      "request": "GET /api/techstore/dashboard (verificacion de cabeceras)",
+      "expected": "Content-Type: application/json",
+      "actual": "Content-Type: application/json; charset=utf-8",
+      "passed": true,
+      "elapsed": 0.008974600001238286,
+      "category": "Seguridad"
+    },
+    {
+      "case_id": "PR-01",
+      "description": "Latencia del dashboard (10 llamadas repetidas)",
+      "request": "10x GET /api/techstore/dashboard",
+      "expected": "Tiempo promedio documentado; estabilidad entre llamadas",
+      "actual": "avg=0.0141s, min=0.0088s, max=0.0352s",
+      "passed": true,
+      "elapsed": 0.014140999998198822,
+      "category": "Rendimiento"
+    },
+    {
+      "case_id": "PR-02",
+      "description": "Latencia del listado de ordenes (10 llamadas repetidas)",
+      "request": "10x GET /api/techstore/maintenance-orders?limit=20",
+      "expected": "Tiempo promedio documentado; estabilidad entre llamadas",
+      "actual": "avg=0.0231s, min=0.0160s, max=0.0330s",
+      "passed": true,
+      "elapsed": 0.023050460004014894,
+      "category": "Rendimiento"
+    }
+  ]
+}

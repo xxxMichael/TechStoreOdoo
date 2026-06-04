@@ -14,18 +14,24 @@
                             string="Desactivar"
                             type="object"
                             class="btn-danger"
+                            icon="fa-ban"
                             attrs="{'invisible': [('state', '=', 'inactive')]}"
                             confirm="¿Deseas desactivar este técnico? Sus órdenes activas deberán reasignarse."/>
                     <button name="action_activate"
                             string="Activar"
                             type="object"
                             class="btn-success"
+                            icon="fa-check"
                             attrs="{'invisible': [('state', '=', 'active')]}"/>
                     <field name="state" widget="statusbar"
                            statusbar_visible="active,inactive"/>
                 </header>
                 <sheet>
-                    <!-- Botón de acceso rápido a órdenes -->
+                    <widget name="web_ribbon" title="Inactivo" bg_color="bg-secondary"
+                            attrs="{'invisible': [('state', '!=', 'inactive')]}"/>
+                    <widget name="web_ribbon" title="Ocupado" bg_color="bg-warning"
+                            attrs="{'invisible': [('availability', '!=', 'busy')]}"/>
+
                     <div class="oe_button_box" name="button_box">
                         <button name="action_view_orders"
                                 type="object"
@@ -49,7 +55,7 @@
 
                     <group>
                         <group string="Datos personales">
-                            <field name="employee_number"/>
+                            <field name="employee_number" readonly="1"/>
                             <field name="employee_id"/>
                             <field name="email" widget="email"/>
                             <field name="phone" widget="phone"/>
@@ -57,26 +63,22 @@
                         </group>
                         <group string="Métricas de rendimiento">
                             <field name="avg_resolution_days" readonly="1"/>
-                            <field name="recurrence_rate" readonly="1" string="Tasa de reincidencia (%)"/>
+                            <field name="recurrence_rate" readonly="1"/>
+                            <field name="active_order_count" readonly="1"/>
+                            <field name="completed_order_count" readonly="1"/>
                         </group>
                     </group>
 
-                    <!-- Especialidades (RF-07) -->
                     <group string="Especialidades técnicas">
-                        <group>
-                            <field name="specialty_hardware"/>
-                            <field name="specialty_software"/>
-                            <field name="specialty_networks"/>
-                        </group>
-                        <group>
-                            <field name="specialty_electronics"/>
-                            <field name="specialty_other"/>
-                            <field name="specialty_notes"
-                                   attrs="{'invisible': [('specialty_other', '=', False)]}"/>
-                        </group>
+                        <field name="specialty_hardware"/>
+                        <field name="specialty_software"/>
+                        <field name="specialty_networks"/>
+                        <field name="specialty_electronics"/>
+                        <field name="specialty_other"/>
+                        <field name="specialty_notes"
+                               attrs="{'invisible': [('specialty_other', '=', False)]}"/>
                     </group>
 
-                    <!-- Órdenes asignadas (RF-08) -->
                     <notebook>
                         <page string="Órdenes activas" name="active_orders">
                             <field name="order_ids"
@@ -90,6 +92,20 @@
                                     <field name="priority" widget="priority"/>
                                     <field name="state" widget="badge"/>
                                     <field name="days_open" string="Días"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Órdenes cerradas" name="closed_orders">
+                            <field name="order_ids"
+                                   domain="[('state', '=', 'closed')]"
+                                   readonly="1">
+                                <tree>
+                                    <field name="folio"/>
+                                    <field name="client_id"/>
+                                    <field name="service_type_id"/>
+                                    <field name="close_date"/>
+                                    <field name="days_open" string="Días"/>
+                                    <field name="reopened" optional="hide"/>
                                 </tree>
                             </field>
                         </page>
@@ -112,6 +128,9 @@
         <field name="model">ts.technician</field>
         <field name="arch" type="xml">
             <tree string="Técnicos"
+                  decoration-success="availability == 'available' and state == 'active'"
+                  decoration-warning="availability == 'busy'"
+                  decoration-info="availability == 'leave'"
                   decoration-muted="state == 'inactive'">
                 <field name="employee_number"/>
                 <field name="name"/>
@@ -138,11 +157,21 @@
             <search string="Buscar Técnicos">
                 <field name="name"/>
                 <field name="employee_number"/>
+                <separator/>
                 <filter name="active" string="Activos" domain="[('state', '=', 'active')]"/>
+                <filter name="inactive" string="Inactivos" domain="[('state', '=', 'inactive')]"/>
+                <separator/>
                 <filter name="available" string="Disponibles" domain="[('availability', '=', 'available')]"/>
+                <filter name="busy" string="Ocupados" domain="[('availability', '=', 'busy')]"/>
+                <separator/>
                 <filter name="hardware" string="Hardware" domain="[('specialty_hardware', '=', True)]"/>
                 <filter name="software" string="Software" domain="[('specialty_software', '=', True)]"/>
                 <filter name="networks" string="Redes" domain="[('specialty_networks', '=', True)]"/>
+                <separator/>
+                <group expand="0" string="Agrupar por">
+                    <filter name="group_availability" string="Disponibilidad" context="{'group_by': 'availability'}"/>
+                    <filter name="group_state" string="Estado" context="{'group_by': 'state'}"/>
+                </group>
             </search>
         </field>
     </record>

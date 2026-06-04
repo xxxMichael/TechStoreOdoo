@@ -1,32 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Formulario de tipo de servicio -->
+    <!-- ═══════════════════════════════════════════════════════════════════
+         VISTA FORMULARIO — Tipo de Servicio
+    ═══════════════════════════════════════════════════════════════════ -->
     <record id="view_ts_service_type_form" model="ir.ui.view">
         <field name="name">ts.service.type.form</field>
         <field name="model">ts.service.type</field>
         <field name="arch" type="xml">
             <form string="Tipo de Servicio">
                 <sheet>
+                    <widget name="web_ribbon" title="Archivado" bg_color="bg-secondary"
+                            attrs="{'invisible': [('active', '=', True)]}"/>
+
                     <div class="oe_title">
                         <h1><field name="name" placeholder="Nombre del tipo de servicio"/></h1>
                     </div>
+
                     <group>
-                        <field name="description" placeholder="Descripción del servicio..."/>
-                        <field name="active" widget="boolean_toggle"/>
-                        <field name="order_count" readonly="1" string="Órdenes con este servicio"/>
+                        <group string="Información general">
+                            <field name="active" widget="boolean_toggle"/>
+                            <field name="order_count" readonly="1"/>
+                        </group>
                     </group>
+                    <group string="Descripción" col="1">
+                        <field name="description" placeholder="Descripción del servicio..." nolabel="1"/>
+                    </group>
+
+                    <notebook>
+                        <page string="Órdenes relacionadas" name="orders">
+                            <field name="order_ids" readonly="1">
+                                <tree create="false" edit="false" delete="false">
+                                    <field name="folio"/>
+                                    <field name="client_id"/>
+                                    <field name="technician_id"/>
+                                    <field name="state" widget="badge"/>
+                                    <field name="reception_date"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
                 </sheet>
             </form>
         </field>
     </record>
 
-    <!-- Lista de tipos de servicio -->
+    <!-- ═══════════════════════════════════════════════════════════════════
+         VISTA LISTA — Tipos de Servicio
+    ═══════════════════════════════════════════════════════════════════ -->
     <record id="view_ts_service_type_list" model="ir.ui.view">
         <field name="name">ts.service.type.list</field>
         <field name="model">ts.service.type</field>
         <field name="arch" type="xml">
-            <tree string="Tipos de Servicio">
+            <tree string="Tipos de Servicio" decoration-muted="active == False">
                 <field name="name"/>
                 <field name="description"/>
                 <field name="order_count" string="Órdenes"/>
@@ -35,11 +61,30 @@
         </field>
     </record>
 
+    <!-- Búsqueda de tipos de servicio -->
+    <record id="view_ts_service_type_search" model="ir.ui.view">
+        <field name="name">ts.service.type.search</field>
+        <field name="model">ts.service.type</field>
+        <field name="arch" type="xml">
+            <search string="Buscar Tipos de Servicio">
+                <field name="name"/>
+                <separator/>
+                <filter name="active" string="Activos" domain="[('active', '=', True)]"/>
+                <filter name="inactive" string="Archivados" domain="[('active', '=', False)]"/>
+                <separator/>
+                <group expand="0" string="Agrupar por">
+                    <filter name="group_active" string="Estado" context="{'group_by': 'active'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
     <!-- Acción tipos de servicio -->
     <record id="action_ts_service_type" model="ir.actions.act_window">
         <field name="name">Tipos de Servicio</field>
         <field name="res_model">ts.service.type</field>
         <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_active': 1}</field>
     </record>
 
 </odoo>

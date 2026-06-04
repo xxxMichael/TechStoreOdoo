@@ -21,6 +21,7 @@
     'data': [
         'security/security.xml',
         'security/ir.model.access.csv',
+        'data/sequence_data.xml',
         'data/service_type_data.xml',
         'views/service_type_views.xml',
         'views/technician_views.xml',
@@ -31,11 +32,6 @@
         'views/menu_views.xml',
     ],
 
-    'assets': {
-        'web.assets_tests': [
-            'techstore_maintenance/static/tests/tours/*.js',
-        ],
-    },
 
     'installable': True,
     'application': True,
