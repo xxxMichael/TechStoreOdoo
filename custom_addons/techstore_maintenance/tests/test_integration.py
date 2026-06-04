@@ -473,9 +473,10 @@ class TestSecurity(TransactionCase):
         SEC-05 | Seguridad | Serial duplicado bloqueado.
         Nota técnica: _sql_constraints genera psycopg2.errors.UniqueViolation a nivel BD
         (antes de que @api.constrains pueda convertirlo a ValidationError), por eso
-        se usa assertRaises(Exception) que cubre ambos tipos de excepción.
+        se usa assertRaises(IntegrityError) que cubre ambos tipos de excepción.
         """
-        with self.assertRaises(Exception):  # psycopg2.UniqueViolation o ValidationError
+        from psycopg2 import IntegrityError
+        with self.assertRaises(IntegrityError):  # psycopg2.UniqueViolation o ValidationError
             self.env['ts.equipment'].create({
                 'name': 'Copia fraudulenta',
                 'equipment_type': 'laptop',

@@ -43,9 +43,8 @@ class TestTechnician(TransactionCase):
     # ── CP-14: Número de empleado único (RF-07) ────────────────────────────
     def test_14_employee_number_unique_constraint(self):
         """CP-14 | RF-07 | Número de empleado duplicado → IntegrityError (sql constraint)"""
-        from odoo.exceptions import ValidationError
-        import psycopg2
-        with self.assertRaises(Exception):
+        from psycopg2 import IntegrityError
+        with self.assertRaises(IntegrityError):
             self.env['ts.technician'].create({
                 'name': 'Otro Técnico',
                 'employee_number': 'T-AGL-001',  # duplicado
