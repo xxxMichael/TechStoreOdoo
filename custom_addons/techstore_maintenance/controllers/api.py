@@ -104,22 +104,30 @@ class TechStoreApiController(http.Controller):
 
     @http.route('/api/techstore/<string:resource>/<int:record_id>', type='http', auth='user', methods=['PUT', 'PATCH'], csrf=False)
     def update_resource(self, resource, record_id, **kwargs):
+        method = request.httprequest.method
         config = self._get_resource_config(resource)
         self._ensure_writable_resource(config, operation='update')
         record = self._get_record(config, record_id)
         payload = self._get_json_payload()
 
+        if method == 'PUT':
+            # PUT: Reemplazo completo — campos omitidos se limpian (False)
+            values = {field: payload.get(field, False) for field in config['writable_fields']}
+        else:
+            # PATCH: Actualizacion parcial — solo se procesan campos presentes
+            values = self._extract_values(payload, config)
+
         if config['model'] == 'ts.maintenance.order':
             record._check_not_closed()
-            technician_id = payload.pop('technician_id', None) if 'technician_id' in payload else None
-            values = self._extract_values(payload, config)
+            # El tecnico se maneja via accion para asegurar reglas de negocio y logs
+            technician_id = values.pop('technician_id', None) if 'technician_id' in values else None
             if values:
                 record.write(values)
             if technician_id is not None:
                 record.action_assign_technician(technician_id)
         else:
-            values = self._extract_values(payload, config)
-            record.write(values)
+            if values:
+                record.write(values)
 
         return self._json_response(self._serialize_record(record, config))
 

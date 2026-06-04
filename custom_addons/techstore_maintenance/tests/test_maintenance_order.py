@@ -9,6 +9,7 @@ import time
 from datetime import date, timedelta
 from odoo.tests.common import TransactionCase
 from odoo.exceptions import UserError, ValidationError
+from psycopg2 import IntegrityError
 
 
 class TestMaintenanceOrderCreation(TransactionCase):
@@ -58,8 +59,8 @@ class TestMaintenanceOrderCreation(TransactionCase):
 
     # ── CP-02: Campos obligatorios ausentes ──────────────────────────────
     def test_02_create_order_missing_required_fields(self):
-        """CP-02 | RF-01 | Intentar crear orden sin 'problem_description' → ValidationError"""
-        with self.assertRaises(Exception):
+        """CP-02 | RF-01 | Intentar crear orden sin 'problem_description' → IntegrityError"""
+        with self.assertRaises(IntegrityError):
             self.env['ts.maintenance.order'].create({
                 'client_id': self.client.id,
                 'equipment_id': self.equipment.id,

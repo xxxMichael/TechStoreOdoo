@@ -6,6 +6,7 @@ Cubre RF-11, RF-12, RF-13, RF-15
 """
 from odoo.tests.common import TransactionCase
 from odoo.exceptions import ValidationError, AccessError
+from psycopg2 import IntegrityError
 
 
 class TestEquipment(TransactionCase):
@@ -37,7 +38,7 @@ class TestEquipment(TransactionCase):
         CP-22 | RF-11 | Serial duplicado lanza excepción.
         Nota técnica: los _sql_constraints de Odoo generan psycopg2.errors.UniqueViolation
         a nivel de BD (antes de que @api.constrains pueda convertirlo a ValidationError),
-        por eso se captura con Exception en lugar de ValidationError.
+        por eso se captura con IntegrityError en lugar de Exception.
         """
         self.env['ts.equipment'].create({
             'name': 'Laptop 1',
@@ -47,7 +48,7 @@ class TestEquipment(TransactionCase):
             'serial_number': 'SN-DUPLICADO-001',
             'client_id': self.client.id,
         })
-        with self.assertRaises(Exception):  # psycopg2.UniqueViolation o ValidationError
+        with self.assertRaises(IntegrityError):  # psycopg2.UniqueViolation o ValidationError
             self.env['ts.equipment'].create({
                 'name': 'Laptop 2',
                 'equipment_type': 'laptop',
@@ -109,7 +110,7 @@ class TestEquipment(TransactionCase):
             'client_id': self.client.id,
         })
         service_type = self.env['ts.service.type'].create({'name': 'Diagnóstico'})
-        with self.assertRaises(Exception):
+        with self.assertRaises(IntegrityError):
             self.env['ts.maintenance.order'].create({
                 'client_id': self.client.id,
                 'equipment_id': equipment.id,
