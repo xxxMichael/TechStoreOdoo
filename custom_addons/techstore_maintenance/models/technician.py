@@ -24,6 +24,8 @@ class TsTechnician(models.Model):
         string='Número de empleado',
         required=True,
         copy=False,
+        readonly=True,
+        default=lambda self: ('Nuevo'),
     )
     employee_id = fields.Many2one(
         comodel_name='hr.employee',
@@ -133,6 +135,15 @@ class TsTechnician(models.Model):
             else:
                 tech.avg_resolution_days = 0.0
                 tech.recurrence_rate = 0.0
+
+    @api.model
+    def create(self, vals):
+        """
+        Sobrescribe el método de creación para asignar un número de empleado secuencial.
+        """
+        if vals.get('employee_number', ('Nuevo')) == ('Nuevo'):
+            vals['employee_number'] = self.env['ir.sequence'].next_by_code('ts.technician.employee_number') or ('Nuevo')
+        return super(TsTechnician, self).create(vals)
 
     # ─── Acciones ─────────────────────────────────────────────────────────────
     def action_deactivate(self):

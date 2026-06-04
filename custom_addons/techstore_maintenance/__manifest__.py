@@ -21,6 +21,7 @@
     'data': [
         'security/security.xml',
         'security/ir.model.access.csv',
+        'data/sequence_data.xml',
         'data/service_type_data.xml',
         'views/service_type_views.xml',
         'views/technician_views.xml',

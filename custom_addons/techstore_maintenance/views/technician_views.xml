@@ -55,7 +55,7 @@
 
                     <group>
                         <group string="Datos personales">
-                            <field name="employee_number"/>
+                            <field name="employee_number" readonly="1"/>
                             <field name="employee_id"/>
                             <field name="email" widget="email"/>
                             <field name="phone" widget="phone"/>
